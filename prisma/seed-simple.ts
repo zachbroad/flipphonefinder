@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Category, PhoneShape, GpsNavigation, RideshareCompat, OperatingSystem, KeyboardType, UsbType, ScreenType, PodcastsMusicSupport, SupportUpdates } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -98,7 +98,17 @@ async function main() {
         price: phone.price && typeof phone.price === 'number' ? phone.price : null,
         condition: 'New',
         description: `${phone.rating} rated phone`,
-        imageUrl: phone.image || null
+        imageUrl: phone.image || null,
+        category: Category.DUMBPHONE,
+        phoneShape: PhoneShape.CANDY_BAR,
+        gpsNavigation: GpsNavigation.NO,
+        rideshareCompat: RideshareCompat.NO,
+        operatingSystem: OperatingSystem.THREADX,
+        keyboardType: KeyboardType.T9,
+        usbType: UsbType.MICRO_USB,
+        screenType: ScreenType.LCD,
+        podcastsMusicSupport: PodcastsMusicSupport.NO,
+        supportUpdates: SupportUpdates.NOT_RELIABLE
       }
       
       await prisma.phone.create({

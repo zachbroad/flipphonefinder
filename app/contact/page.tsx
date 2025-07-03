@@ -104,8 +104,10 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-slate-800">Address</h3>
                       <p className="text-slate-600">Broad Publications LLC</p>
-                      <p className="text-slate-600">123 Digital Wellness Blvd</p>
-                      <p className="text-slate-600">San Francisco, CA 94102</p>
+                      <p className="text-slate-600">201 N US Highway 1</p>
+                      <p className="text-slate-600">STE D10 #1129</p>
+                      <p className="text-slate-600">Jupiter, FL 33477</p>
+                      <p className="text-slate-600">United States</p>
                     </div>
                   </div>
                   

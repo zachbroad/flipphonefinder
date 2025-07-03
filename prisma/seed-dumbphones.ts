@@ -159,7 +159,7 @@ async function main() {
   const jsonPath = path.join(process.cwd(), 'data', 'dumbphones.json')
   
   // For now, we'll use the data you provided directly
-  const phones = [
+  const phones: any[] = [
     // You would place the full JSON array here
     // For brevity, I'll show the structure with first few items
   ]

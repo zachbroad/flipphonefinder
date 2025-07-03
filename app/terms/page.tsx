@@ -101,8 +101,10 @@ export default function Terms() {
               </p>
               <div className="bg-slate-50 rounded-lg p-4 mb-6">
                 <p className="text-slate-700"><strong>Broad Publications LLC</strong></p>
-                <p className="text-slate-600">123 Digital Wellness Blvd</p>
-                <p className="text-slate-600">San Francisco, CA 94102</p>
+                <p className="text-slate-600">201 N US Highway 1</p>
+                <p className="text-slate-600">STE D10 #1129</p>
+                <p className="text-slate-600">Jupiter, FL 33477</p>
+                <p className="text-slate-600">United States</p>
                 <p className="text-slate-600">Email: hello@broadpublications.com</p>
                 <p className="text-slate-600">Phone: (555) 123-4567</p>
               </div>
