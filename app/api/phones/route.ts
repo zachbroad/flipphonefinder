@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Phone } from '@/types/phone'
 
 export async function GET() {
   try {
-    const phones = await prisma.phone.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
-    
+    const phones: Phone[] = await prisma.phone.findMany();
+
     return NextResponse.json(phones)
   } catch (error) {
     console.error('Error fetching phones:', error)

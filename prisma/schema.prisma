@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,163 +7,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model Phone {
-  id          String   @id @default(cuid())
-  brand       String
-  model       String
-  price       Float?
-  condition   String
-  description String?
-  imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  name                String?
+  brand               String?
+  link                String?
+  price               String?
+  // featured            Boolean? @default(false)
+  support_and_updates String?
+  category            String?
+  network             String?
+  G_4G_3G_2G          String? @map("5G/4G/3G/2G")
+  volte               String?
+  rideshare           String?
+  gps_navigation      String?
+  shape               String?
+  group_text_mms      String?
+  removable_battery   String?
+  operating_system    String?
+  hotspot_tethering   String?
+  browser             String?
+  wifi_calling        String?
+  whatsapp            String?
+  sd_cards            String?
+  FA                  String? @map("2FA")
+  spotify             String?
+  email               String?
+  voice_to_text       String?
+  t9_keyboard         String?
+  usb_type            String?
+  headphone_jack      String?
+  signal_app          String?
+  camera              String?
+  calendar            String?
+  screen_size_inches  String?
+  screen_type         String?
+  sim_type            String?
+  sold_unlocked       String?
+  dual_sim            String?
+  podcasts_music      String?
+  rugged              String?
+  bluetooth           String?
+  image               String?
+  europe_network      String?
+  touchscreen         String?
+  android_auto        String?
+  region              String?
+  asia_network        String?
+  nfc_support         String?
+  esim                String?
+  rating              Float?
+  id                  Int     @id(map: "dump_pk") @default(autoincrement())
 
-  // Article for the phone
-  markdown String?
-
-  // Basic categorization
-  category    Category
-  phoneShape  PhoneShape
-  region      Region[]
-
-  // Network and connectivity
-  networkProviders    NetworkProvider[]
-  networkCapability   NetworkCapability[]
-  volteSupport       Boolean @default(false)
-  wifiCalling        Boolean @default(false)
-  hotspotTethering   Boolean @default(false)
-  dualSimSupport     Boolean @default(false)
-  esimSupport        Boolean @default(false)
-
-  // Apps and services
-  whatsappSupport    Boolean @default(false)
-  spotifyCompatible  Boolean @default(false)
-  gpsNavigation      GpsNavigation
-  groupTextMms       Boolean @default(false)
-  rideshareCompat    RideshareCompat
-  signalAppSupport   Boolean @default(false)
-  
-  // Hardware features
-  removableBattery   Boolean @default(false)
-  operatingSystem    OperatingSystem
-  browserSupport     Boolean @default(false)
-  sdCardSupport      Boolean @default(false)
-  twoFactorAuth      TwoFactorAuth[]
-  emailSupport       Boolean @default(false)
-  voiceToText        Boolean @default(false)
-  keyboardType       KeyboardType
-  usbType            UsbType
-  headphoneJack      Boolean @default(false)
-  camera             Boolean @default(false)
-  calendar           Boolean @default(false)
-  screenType         ScreenType
-  soldUnlocked       Boolean @default(false)
-  podcastsMusicSupport PodcastsMusicSupport
-  supportUpdates     SupportUpdates
-  touchscreen        Boolean @default(false)
-  androidAuto        Boolean @default(false)
-  nfcTapToPay        Boolean @default(false)
-  rugged             Boolean @default(false)
-
-  @@map("phones")
-}
-
-enum Category {
-  DUMBPHONE
-  SMART_FEATURE_PHONE
-  FEATURE_PHONE
-  SMARTPHONE
-}
-
-enum PhoneShape {
-  CANDY_BAR
-  FLIP
-  SLIDER
-  QWERTY
-  TOUCH
-}
-
-enum Region {
-  EUROPE
-  NORTH_AMERICA
-  ASIA_OCEANIA
-  AFRICA
-  LATAM
-}
-
-enum NetworkProvider {
-  T_MOBILE
-  VERIZON
-  ATT
-  TRACFONE_STRAIGHT_TALK
-  BELL
-  TELUS
-  ROGERS_FIDO
-  CONSUMER_CELLULAR
-  US_CELLULAR
-  BOOST_MOBILE
-}
-
-enum NetworkCapability {
-  FIVE_G
-  FOUR_G
-  THREE_G
-  TWO_G
-}
-
-enum GpsNavigation {
-  GOOGLE_MAPS
-  BROWSER_MAPS
-  HERE_MAPS
-  NO
-  OPEN_MAPS
-  WAZE
-}
-
-enum RideshareCompat {
-  NO
-  APP
-  WEB_BROWSER
-}
-
-enum OperatingSystem {
-  KAIOS
-  ANDROID_AOSP
-  ANDROID_WITH_GOOGLE
-  THREADX
-  SERIES_30_PLUS
-}
-
-enum TwoFactorAuth {
-  SMS
-  APPS
-}
-
-enum KeyboardType {
-  T9
-  PHYSICAL_QWERTY
-  TOUCH_QWERTY
-  NO
-}
-
-enum UsbType {
-  USB_C
-  MICRO_USB
-}
-
-enum ScreenType {
-  LCD
-  AMOLED
-  E_INK
-}
-
-enum PodcastsMusicSupport {
-  APP
-  MP3
-  NO
-}
-
-enum SupportUpdates {
-  RELIABLE
-  NOT_RELIABLE
+  @@index([id], map: "dump_id_index")
+  @@map("phone")
 }

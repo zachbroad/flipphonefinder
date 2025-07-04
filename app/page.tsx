@@ -2,25 +2,27 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface Phone {
   id: string
-  brand: string
-  model: string
-  price: number | null
-  condition: string
-  description: string | null
-  imageUrl: string | null
+  brand: string | null
+  name: string | null
+  price: string | null
+  rating: number | null
+  condition: string | null
+  image: string | null
 }
 
-type SortField = 'brand' | 'model' | 'price' | 'condition'
+type SortField = 'brand' | 'name' | 'price' | 'condition'
 type SortDirection = 'asc' | 'desc'
 
 export default function Home() {
+  const router = useRouter()
   const [phones, setPhones] = useState<Phone[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
-  const [sortField, setSortField] = useState<SortField>('brand')
+  const [sortField, setSortField] = useState<SortField>('name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [conditionFilter, setConditionFilter] = useState<string>('all')
   const [priceRangeFilter, setPriceRangeFilter] = useState<string>('all')
@@ -30,9 +32,10 @@ export default function Home() {
       try {
         const response = await fetch('/api/phones')
         const data = await response.json()
-        setPhones(data)
+        setPhones(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Error fetching phones:', error)
+        setPhones([])
       } finally {
         setLoading(false)
       }
@@ -52,19 +55,21 @@ export default function Home() {
 
   const filteredAndSortedPhones = phones
     .filter(phone => {
-      const matchesSearch = phone.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        phone.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        phone.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch = !searchTerm || 
+        phone.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        phone.name?.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesCondition = conditionFilter === 'all' || phone.condition === conditionFilter
 
       const matchesPrice = priceRangeFilter === 'all' || (() => {
         if (!phone.price) return priceRangeFilter === 'unknown'
+        const price = parseFloat(phone.price)
+        if (isNaN(price)) return priceRangeFilter === 'unknown'
         switch (priceRangeFilter) {
-          case 'under-100': return phone.price < 100
-          case '100-300': return phone.price >= 100 && phone.price <= 300
-          case '300-600': return phone.price > 300 && phone.price <= 600
-          case 'over-600': return phone.price > 600
+          case 'under-100': return price < 100
+          case '100-300': return price >= 100 && price <= 300
+          case '300-600': return price > 300 && price <= 600
+          case 'over-600': return price > 600
           default: return true
         }
       })()
@@ -76,8 +81,8 @@ export default function Home() {
       let bValue: any = b[sortField]
 
       if (sortField === 'price') {
-        aValue = a.price || 0
-        bValue = b.price || 0
+        aValue = parseFloat(a.price || '0') || 0
+        bValue = parseFloat(b.price || '0') || 0
       }
 
       if (typeof aValue === 'string') {
@@ -107,7 +112,11 @@ export default function Home() {
     )
   }
 
-  const uniqueConditions = [...new Set(phones.map(phone => phone.condition))]
+  const uniqueConditions = [...new Set(phones.map(phone => phone.condition).filter(Boolean))]
+
+  const handlePhoneClick = (phoneId: string) => {
+    router.push(`/phones/${phoneId}`)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -328,12 +337,12 @@ export default function Home() {
                     </th>
                     <th className="px-8 py-5 text-left">
                       <button
-                        onClick={() => handleSort('model')}
+                        onClick={() => handleSort('name')}
                         className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
                       >
-                        <span>Model</span>
+                        <span>Name</span>
                         <div className="group-hover:scale-110 transition-transform duration-200">
-                          {getSortIcon('model')}
+                          {getSortIcon('name')}
                         </div>
                       </button>
                     </th>
@@ -368,20 +377,27 @@ export default function Home() {
                     <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
                       Description
                     </th>
+                    <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredAndSortedPhones.map((phone, index) => (
-                    <tr key={phone.id} className="hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group">
+                    <tr 
+                      key={phone.id} 
+                      onClick={() => handlePhoneClick(phone.id)}
+                      className="hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer"
+                    >
                       <td className="px-8 py-6">
-                        <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200">{phone.brand}</div>
+                        <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200">{phone.brand || 'Unknown'}</div>
                       </td>
                       <td className="px-8 py-6">
-                        <div className="text-slate-800 font-medium">{phone.model}</div>
+                        <div className="text-slate-800 font-medium">{phone.name || 'Unknown'}</div>
                       </td>
                       <td className="px-8 py-6">
                         <div className="font-bold text-emerald-600 text-lg">
-                          {phone.price ? `$${phone.price.toLocaleString()}` : (
+                          {phone.price ? `$${parseFloat(phone.price).toLocaleString()}` : (
                             <span className="text-slate-400 text-sm font-normal">N/A</span>
                           )}
                         </div>
@@ -393,15 +409,15 @@ export default function Home() {
                             ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white'
                             : 'bg-gradient-to-r from-slate-400 to-slate-600 text-white'
                           }`}>
-                          {phone.condition}
+                          {phone.condition || 'Unknown'}
                         </span>
                       </td>
                       <td className="px-8 py-6">
                         <div className="h-20 w-20 relative group-hover:scale-110 transition-transform duration-200">
-                          {phone.imageUrl ? (
+                          {phone.image ? (
                             <Image
-                              src={phone.imageUrl}
-                              alt={`${phone.brand} ${phone.model}`}
+                              src={phone.image}
+                              alt={`${phone.brand} ${phone.name}`}
                               fill
                               className="object-cover rounded-xl shadow-lg border-2 border-white"
                             />
@@ -414,8 +430,8 @@ export default function Home() {
                       </td>
                       <td className="px-8 py-6">
                         <div className="text-lg">
-                          {phone.description?.includes('⭐') ? (
-                            <span className="text-amber-400">{phone.description.match(/⭐+/)?.[0] || '⭐⭐⭐'}</span>
+                          {phone.rating ? (
+                            <span className="text-amber-400">{'⭐'.repeat(phone.rating)}</span>
                           ) : (
                             <span className="text-slate-400 text-sm">No rating</span>
                           )}
@@ -423,10 +439,24 @@ export default function Home() {
                       </td>
                       <td className="px-8 py-6">
                         <div className="text-sm text-slate-600 max-w-xs leading-relaxed">
-                          {phone.description?.replace(/⭐+\s*rated phone/, '').trim() || (
+                          {phone.description || (
                             <span className="italic text-slate-400">No description available</span>
                           )}
                         </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handlePhoneClick(phone.id)
+                          }}
+                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
+                        >
+                          View Details
+                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
                       </td>
                     </tr>
                   ))}
