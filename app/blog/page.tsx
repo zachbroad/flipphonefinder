@@ -6,7 +6,17 @@ export default function Blog() {
       date: "Dec 15, 2024",
       readTime: "8 min read",
       category: "Digital Wellness",
-      image: "📱"
+      image: "📱",
+      slug: "digital-detox-guide-2024"
+    },
+    {
+      title: "Tips for Switching to a Flip Phone: Lessons from Real Users",
+      excerpt: "Practical advice and hard-learned lessons from people who made the switch to flip phones, including common challenges and solutions.",
+      date: "Dec 13, 2024",
+      readTime: "10 min read",
+      category: "Guides",
+      image: "🔄",
+      slug: "tips-for-switching-to-flip-phone"
     },
     {
       title: "Light Phone 3 vs AGM M8: Which Minimalist Phone is Right for You?",
@@ -14,7 +24,8 @@ export default function Blog() {
       date: "Dec 12, 2024",
       readTime: "12 min read",
       category: "Reviews",
-      image: "⚖️"
+      image: "⚖️",
+      slug: "light-phone-3-vs-agm-m8-comparison"
     },
     {
       title: "Why Gen Z is Embracing Flip Phones",
@@ -22,7 +33,8 @@ export default function Blog() {
       date: "Dec 10, 2024",
       readTime: "6 min read",
       category: "Trends",
-      image: "👥"
+      image: "👥",
+      slug: "gen-z-flip-phones"
     },
     {
       title: "Setting Up Your First Dumbphone: A Beginner's Guide",
@@ -30,7 +42,8 @@ export default function Blog() {
       date: "Dec 8, 2024",
       readTime: "10 min read",
       category: "Guides",
-      image: "🚀"
+      image: "🚀",
+      slug: "setting-up-first-dumbphone"
     },
     {
       title: "The Science Behind Digital Minimalism",
@@ -38,7 +51,8 @@ export default function Blog() {
       date: "Dec 5, 2024",
       readTime: "7 min read",
       category: "Research",
-      image: "🧠"
+      image: "🧠",
+      slug: "science-digital-minimalism"
     },
     {
       title: "Best Flip Phones for Business Professionals",
@@ -46,7 +60,8 @@ export default function Blog() {
       date: "Dec 3, 2024",
       readTime: "9 min read",
       category: "Business",
-      image: "💼"
+      image: "💼",
+      slug: "best-flip-phones-business"
     }
   ]
 
@@ -122,9 +137,9 @@ export default function Blog() {
                     {posts[0].category}
                   </span>
                 </div>
-                <button className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
+                <a href={`/blog/${posts[0].slug}`} className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
                   Read Article
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -133,8 +148,8 @@ export default function Blog() {
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.slice(1).map((post, index) => (
-            <article key={index} className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-200 group">
-              <div className="p-6">
+            <a key={index} href={`/blog/${post.slug}`} className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-200 group block">
+              <article className="p-6">
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
                   {post.image}
                 </div>
@@ -151,8 +166,8 @@ export default function Blog() {
                   <span>{post.date}</span>
                   <span>{post.readTime}</span>
                 </div>
-              </div>
-            </article>
+              </article>
+            </a>
           ))}
         </div>
 

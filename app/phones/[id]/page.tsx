@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Phone } from '@/types/phone'
@@ -218,15 +218,13 @@ export default function PhoneDetailPage() {
                 <span className="text-slate-600">{getBooleanIcon(Boolean(phone.esim))}</span>
               </div>
 
-              {phone.network?.length && phone.network?.length > 0 && (
+              {phone.network && (
                 <div className="py-2">
                   <span className="font-medium text-slate-700">Network Capability</span>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {phone.network?.map((capability, index) => (
-                      <span key={index} className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {formatEnumValue(capability)}
-                      </span>
-                    ))}
+                    <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      {formatEnumValue(phone.network)}
+                    </span>
                   </div>
                 </div>
               )}

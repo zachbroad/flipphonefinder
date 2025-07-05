@@ -47,4 +47,8 @@ export interface Phone {
   nfc_support: string | null
   esim: string | null
   rating: number | null
+  featured: boolean | null
+  description?: string | null
+  condition?: string | null
+  twoFactorAuth?: string[] | null
 }

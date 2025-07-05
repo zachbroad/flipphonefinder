@@ -26,7 +26,7 @@ export default function Privacy() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
             <h1 className="text-4xl font-bold text-slate-800 mb-6">Privacy Policy</h1>
-            <p className="text-slate-600 mb-8">Last updated: December 2024</p>
+            <p className="text-slate-600 mb-8">Last updated: December {new Date().getFullYear()}</p>
 
             <div className="prose prose-slate max-w-none">
               <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4">1. Information We Collect</h2>

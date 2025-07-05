@@ -114,7 +114,7 @@ export default function Home() {
 
   const uniqueConditions = [...new Set(phones.map(phone => phone.condition).filter(Boolean))]
 
-  const handlePhoneClick = (phoneId: string) => {
+  const handlePhoneClick = (phoneId: number) => {
     router.push(`/phones/${phoneId}`)
   }
 
@@ -179,6 +179,28 @@ export default function Home() {
         {/* Filter Pills */}
         <div className="mb-8">
           <div className="flex flex-wrap gap-3 justify-center">
+            {/* Popular Feature Pills */}
+            <div className="flex flex-wrap gap-2">
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                📱 Flip Phones
+              </button>
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                🔋 Long Battery
+              </button>
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                📞 VoLTE Support
+              </button>
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                📶 WiFi Calling
+              </button>
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                📷 With Camera
+              </button>
+              <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md">
+                🔓 Unlocked
+              </button>
+            </div>
+
             {/* Condition Pills */}
             <div className="flex flex-wrap gap-2">
               <button
@@ -223,8 +245,7 @@ export default function Home() {
                 { value: 'under-100', label: '💰 Under $100' },
                 { value: '100-300', label: '💰 $100-$300' },
                 { value: '300-600', label: '💰 $300-$600' },
-                { value: 'over-600', label: '💰 Over $600' },
-                { value: 'unknown', label: '💰 Price Unknown' }
+                { value: 'over-600', label: '💰 Over $600' }
               ].map(price => (
                 <button
                   key={price.value}
@@ -357,17 +378,6 @@ export default function Home() {
                         </div>
                       </button>
                     </th>
-                    <th className="px-8 py-5 text-left">
-                      <button
-                        onClick={() => handleSort('condition')}
-                        className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
-                      >
-                        <span>Condition</span>
-                        <div className="group-hover:scale-110 transition-transform duration-200">
-                          {getSortIcon('condition')}
-                        </div>
-                      </button>
-                    </th>
                     <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
                       Image
                     </th>
@@ -403,16 +413,6 @@ export default function Home() {
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <span className={`inline-flex px-3 py-1.5 text-xs font-bold rounded-full shadow-md ${phone.condition === 'New'
-                          ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white'
-                          : phone.condition === 'Refurbished'
-                            ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white'
-                            : 'bg-gradient-to-r from-slate-400 to-slate-600 text-white'
-                          }`}>
-                          {phone.condition || 'Unknown'}
-                        </span>
-                      </td>
-                      <td className="px-8 py-6">
                         <div className="h-20 w-20 relative group-hover:scale-110 transition-transform duration-200">
                           {phone.image ? (
                             <Image
@@ -439,9 +439,7 @@ export default function Home() {
                       </td>
                       <td className="px-8 py-6">
                         <div className="text-sm text-slate-600 max-w-xs leading-relaxed">
-                          {phone.description || (
-                            <span className="italic text-slate-400">No description available</span>
-                          )}
+                          <span className="italic text-slate-400">No description available</span>
                         </div>
                       </td>
                       <td className="px-8 py-6">
@@ -543,7 +541,7 @@ export default function Home() {
             {/* Bottom Bar */}
             <div className="border-t border-slate-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
               <p className="text-sm text-slate-600 mb-4 md:mb-0">
-                © 2024 Broad Publications LLC. All rights reserved. |
+                © {new Date().getFullYear()} Broad Publications LLC. All rights reserved. |
                 <a href="/privacy" className="ml-1 hover:text-indigo-600 transition-colors">Privacy Policy</a> |
                 <a href="/terms" className="ml-1 hover:text-indigo-600 transition-colors">Terms of Service</a>
               </p>
