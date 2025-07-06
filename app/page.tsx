@@ -495,11 +495,11 @@ export default function Home() {
 
         {/* Results Count */}
         <div className="mb-6">
-          <div className="flex items-center justify-between bg-white/60 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/30">
-            <p className="text-slate-700 font-medium">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/60 backdrop-blur-sm rounded-xl px-4 sm:px-6 py-4 border border-white/30 gap-3 sm:gap-0">
+            <p className="text-slate-700 font-medium text-sm sm:text-base">
               Showing <span className="font-bold text-indigo-600">{filteredAndSortedPhones.length}</span> of <span className="font-bold">{phones.length}</span> phones
             </p>
-            <div className="flex items-center text-sm text-slate-500">
+            <div className="flex items-center text-xs sm:text-sm text-slate-500 justify-center sm:justify-start">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>

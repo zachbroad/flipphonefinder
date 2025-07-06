@@ -9,6 +9,8 @@ export default function Compare() {
   const [selectedPhones, setSelectedPhones] = useState<Phone[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+  const [modalSearchTerm, setModalSearchTerm] = useState('')
 
   useEffect(() => {
     const fetchPhones = async () => {
@@ -33,13 +35,20 @@ export default function Compare() {
     phone.name?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const modalFilteredPhones = phones.filter(phone => 
+    (!modalSearchTerm || 
+     phone.brand?.toLowerCase().includes(modalSearchTerm.toLowerCase()) ||
+     phone.name?.toLowerCase().includes(modalSearchTerm.toLowerCase())) &&
+    !selectedPhones.find(p => p.id === phone.id) // Exclude already selected phones
+  )
+
   const addPhoneToCompare = (phone: Phone) => {
     if (selectedPhones.length < 4 && !selectedPhones.find(p => p.id === phone.id)) {
       setSelectedPhones([...selectedPhones, phone])
     }
   }
 
-  const removePhoneFromCompare = (phoneId: string) => {
+  const removePhoneFromCompare = (phoneId: number) => {
     setSelectedPhones(selectedPhones.filter(p => p.id !== phoneId))
   }
 
@@ -221,10 +230,14 @@ export default function Compare() {
                 
                 {/* Add more slots if less than 4 */}
                 {Array.from({ length: 4 - selectedPhones.length }).map((_, index) => (
-                  <div key={index} className="bg-slate-100 rounded-xl p-4 flex items-center justify-center border-2 border-dashed border-slate-300">
-                    <div className="text-center text-slate-400">
-                      <div className="text-3xl mb-2">+</div>
-                      <p className="text-sm">Add Phone</p>
+                  <div 
+                    key={index} 
+                    onClick={() => setShowModal(true)}
+                    className="bg-slate-100 rounded-xl p-4 flex items-center justify-center border-2 border-dashed border-slate-300 hover:border-indigo-400 hover:bg-slate-50 cursor-pointer transition-all duration-200 group"
+                  >
+                    <div className="text-center text-slate-400 group-hover:text-indigo-600">
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">+</div>
+                      <p className="text-sm font-medium">Add Phone</p>
                     </div>
                   </div>
                 ))}
@@ -349,6 +362,87 @@ export default function Compare() {
             </div>
           )}
         </div>
+
+        {/* Phone Selection Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold text-slate-800">Add Phone to Compare</h2>
+                  <button
+                    onClick={() => {
+                      setShowModal(false)
+                      setModalSearchTerm('')
+                    }}
+                    className="text-slate-400 hover:text-slate-600 text-2xl"
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                {/* Modal Search */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search phones..."
+                    value={modalSearchTerm}
+                    onChange={(e) => setModalSearchTerm(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                  />
+                  <div className="absolute right-3 top-3">
+                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Modal Phone List */}
+              <div className="p-6 overflow-y-auto max-h-96">
+                {modalFilteredPhones.length === 0 ? (
+                  <p className="text-center text-slate-500 py-8">No phones available to add</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {modalFilteredPhones.map((phone) => (
+                      <div
+                        key={phone.id}
+                        onClick={() => {
+                          addPhoneToCompare(phone)
+                          setShowModal(false)
+                          setModalSearchTerm('')
+                        }}
+                        className="border-2 border-slate-200 rounded-xl p-4 hover:border-indigo-500 hover:bg-indigo-50 cursor-pointer transition-all duration-200 group"
+                      >
+                        <div className="text-center">
+                          <div className="w-16 h-16 mx-auto mb-3 relative">
+                            {phone.image ? (
+                              <Image
+                                src={phone.image}
+                                alt={`${phone.brand} ${phone.name}`}
+                                fill
+                                className="object-cover rounded-lg"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                                <span className="text-xl">📱</span>
+                              </div>
+                            )}
+                          </div>
+                          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-indigo-700">{phone.brand}</h3>
+                          <p className="text-slate-600 text-xs mb-2">{phone.name}</p>
+                          <p className="text-emerald-600 font-semibold text-sm">
+                            {phone.price ? `$${parseFloat(phone.price).toLocaleString()}` : 'Price N/A'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
