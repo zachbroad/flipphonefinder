@@ -5,10 +5,12 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Phone } from '@/types/phone'
+import Navbar from '@/components/Navbar'
 
 export default function PhoneDetailPage() {
   const params = useParams()
   const [phone, setPhone] = useState<Phone | null>(null)
+  const [relatedPhones, setRelatedPhones] = useState<Phone[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -21,6 +23,19 @@ export default function PhoneDetailPage() {
         }
         const data = await response.json()
         setPhone(data)
+        
+        // Fetch related phones based on same brand or category
+        const allPhonesResponse = await fetch('/api/phones')
+        if (allPhonesResponse.ok) {
+          const allPhones = await allPhonesResponse.json()
+          const related = allPhones
+            .filter((p: Phone) => 
+              p.id !== data.id && // Exclude current phone
+              (p.brand === data.brand || p.category === data.category) // Same brand or category
+            )
+            .slice(0, 4) // Limit to 4 related phones
+          setRelatedPhones(related)
+        }
       } catch (error) {
         console.error('Error fetching phone:', error)
         setError('Phone not found')
@@ -71,17 +86,50 @@ export default function PhoneDetailPage() {
     )
   }
 
-  const formatEnumValue = (value: string | null) => {
+  const formatEnumValue = (value: any) => {
     if (!value) return 'N/A'
-    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    
+    // Handle different data types from jsonb fields
+    if (typeof value === 'string') {
+      return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    }
+    
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No'
+    }
+    
+    if (Array.isArray(value)) {
+      return value.join(', ')
+    }
+    
+    if (typeof value === 'object') {
+      return JSON.stringify(value)
+    }
+    
+    return String(value)
   }
 
   const getBooleanIcon = (value: boolean) => {
     return value ? '✅' : '❌'
   }
 
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 >= 0.5
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+    
+    return (
+      <div className="flex items-center">
+        {'⭐'.repeat(fullStars)}
+        {hasHalfStar && '⭐'}
+        {'☆'.repeat(emptyStars)}
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <Navbar currentPage="detail" />
       <div className="container mx-auto px-4 py-8">
         {/* Back Navigation */}
         <div className="mb-8">
@@ -131,6 +179,14 @@ export default function PhoneDetailPage() {
                       </span>
                     )}
                   </div>
+                  
+                  {/* Description */}
+                  {phone.description && (
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                      <h3 className="text-lg font-semibold text-slate-800 mb-2">Description</h3>
+                      <p className="text-slate-700 leading-relaxed">{phone.description}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,8 +202,8 @@ export default function PhoneDetailPage() {
                     <div className="flex items-center">
                       {phone.rating ? (
                         <div className="flex items-center">
-                          <span className="text-2xl text-amber-400">{'⭐'.repeat(phone.rating)}</span>
-                          <span className="ml-2 text-slate-600">({phone.rating}/5)</span>
+                          <span className="text-2xl text-amber-400">{renderStars(phone.rating)}</span>
+                          <span className="ml-2 text-slate-600">({phone.rating.toFixed(1)}/5)</span>
                         </div>
                       ) : (
                         <span className="text-slate-400">No rating available</span>
@@ -155,6 +211,23 @@ export default function PhoneDetailPage() {
                     </div>
                   </div>
                 </div>
+                
+                {/* Buy Button */}
+                {phone.link && (
+                  <div className="mt-6">
+                    <a
+                      href={phone.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-lg font-bold rounded-xl hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                    >
+                      🛒 Buy Now
+                      <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6a2 2 0 002 2v1m-6 8a2 2 0 002-2v-1M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-6 8h6M8 6a2 2 0 012-2h4a2 2 0 012 2v2m-6 8h6" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -318,6 +391,115 @@ export default function PhoneDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Search Links Section */}
+        <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Search for More Info</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* YouTube */}
+            <a
+              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${phone.brand} ${phone.name} review`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-xl border border-red-200 transition-all duration-200 group"
+            >
+              <div className="text-center">
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                  🎥
+                </div>
+                <span className="text-sm font-medium text-red-700">YouTube</span>
+              </div>
+            </a>
+
+            {/* Google */}
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(`${phone.brand} ${phone.name} specs review`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-all duration-200 group"
+            >
+              <div className="text-center">
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                  🔍
+                </div>
+                <span className="text-sm font-medium text-blue-700">Google</span>
+              </div>
+            </a>
+
+            {/* Amazon */}
+            <a
+              href={`https://www.amazon.com/s?k=${encodeURIComponent(`${phone.brand} ${phone.name}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-4 bg-orange-50 hover:bg-orange-100 rounded-xl border border-orange-200 transition-all duration-200 group"
+            >
+              <div className="text-center">
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                  📦
+                </div>
+                <span className="text-sm font-medium text-orange-700">Amazon</span>
+              </div>
+            </a>
+
+            {/* eBay */}
+            <a
+              href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(`${phone.brand} ${phone.name}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl border border-yellow-200 transition-all duration-200 group"
+            >
+              <div className="text-center">
+                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                  🛒
+                </div>
+                <span className="text-sm font-medium text-yellow-700">eBay</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        {/* Related Phones Section */}
+        {relatedPhones.length > 0 && (
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 p-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Phones</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedPhones.map((relatedPhone) => (
+                <div
+                  key={relatedPhone.id}
+                  className="bg-slate-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200"
+                  onClick={() => window.location.href = `/phones/${relatedPhone.id}`}
+                >
+                  <div className="text-center">
+                    <div className="w-20 h-20 mx-auto mb-3 relative">
+                      {relatedPhone.image ? (
+                        <Image
+                          src={relatedPhone.image}
+                          alt={`${relatedPhone.brand} ${relatedPhone.name}`}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                          <span className="text-2xl">📱</span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-bold text-slate-800 text-sm mb-1">{relatedPhone.brand}</h3>
+                    <p className="text-slate-600 text-xs mb-2">{relatedPhone.name}</p>
+                    <p className="text-emerald-600 font-semibold text-sm">
+                      {relatedPhone.price ? `$${parseFloat(relatedPhone.price).toLocaleString()}` : 'Price N/A'}
+                    </p>
+                    {relatedPhone.rating && (
+                      <div className="mt-2">
+                        <span className="text-amber-400 text-sm">{renderStars(relatedPhone.rating)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

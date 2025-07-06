@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Navbar from '@/components/Navbar'
 
 interface Phone {
   id: string
   brand: string | null
   name: string | null
+  description: string | null
+  featured: boolean | null
+  link: string | null
+  shape: any
   price: string | null
   rating: number | null
   condition: string | null
@@ -26,6 +31,8 @@ export default function Home() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [conditionFilter, setConditionFilter] = useState<string>('all')
   const [priceRangeFilter, setPriceRangeFilter] = useState<string>('all')
+  const [ratingFilter, setRatingFilter] = useState<string>('all')
+  const [shapeFilter, setShapeFilter] = useState<string>('all')
 
   useEffect(() => {
     const fetchPhones = async () => {
@@ -55,7 +62,7 @@ export default function Home() {
 
   const filteredAndSortedPhones = phones
     .filter(phone => {
-      const matchesSearch = !searchTerm || 
+      const matchesSearch = !searchTerm ||
         phone.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         phone.name?.toLowerCase().includes(searchTerm.toLowerCase())
 
@@ -66,17 +73,49 @@ export default function Home() {
         const price = parseFloat(phone.price)
         if (isNaN(price)) return priceRangeFilter === 'unknown'
         switch (priceRangeFilter) {
+          case 'under-50': return price < 50
           case 'under-100': return price < 100
-          case '100-300': return price >= 100 && price <= 300
-          case '300-600': return price > 300 && price <= 600
-          case 'over-600': return price > 600
+          case '100-250': return price >= 100 && price <= 250
+          case '250-plus': return price > 250
           default: return true
         }
       })()
 
-      return matchesSearch && matchesCondition && matchesPrice
+      const matchesRating = ratingFilter === 'all' || (() => {
+        if (!phone.rating) return false
+        const rating = phone.rating
+        switch (ratingFilter) {
+          case '3-plus': return rating >= 3
+          case '4-plus': return rating >= 4
+          case '5-star': return rating >= 5
+          default: return true
+        }
+      })()
+
+      const matchesShape = shapeFilter === 'all' || (() => {
+        if (!phone.shape) return false
+        // Handle jsonb data for filtering
+        let shape = phone.shape
+        if (typeof shape === 'object' && shape !== null) {
+          if (Array.isArray(shape)) {
+            shape = shape.join(' ')
+          } else {
+            shape = JSON.stringify(shape)
+          }
+        }
+        const shapeStr = String(shape).toLowerCase().replace(/['"\[\]{}]/g, '').trim()
+        return shapeStr.includes(shapeFilter.toLowerCase())
+      })()
+
+      return matchesSearch && matchesCondition && matchesPrice && matchesRating && matchesShape
     })
     .sort((a, b) => {
+      // First sort by featured status (featured items first)
+      if (a.featured !== b.featured) {
+        return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+      }
+
+      // Then sort by the selected field
       let aValue: any = a[sortField]
       let bValue: any = b[sortField]
 
@@ -113,38 +152,51 @@ export default function Home() {
   }
 
   const uniqueConditions = [...new Set(phones.map(phone => phone.condition).filter(Boolean))]
+  
+  const uniqueShapes = [...new Set(phones.map(phone => {
+    if (!phone.shape) return null
+    // Handle jsonb data - could be string, array, or object
+    let shape = phone.shape
+    if (typeof shape === 'object' && shape !== null) {
+      if (Array.isArray(shape)) {
+        shape = shape.join(' ')
+      } else {
+        shape = JSON.stringify(shape)
+      }
+    }
+    return String(shape).toLowerCase().replace(/['"\[\]{}]/g, '').trim()
+  }).filter(Boolean))]
 
-  const handlePhoneClick = (phoneId: number) => {
+  const handlePhoneClick = (phoneId: string) => {
     router.push(`/phones/${phoneId}`)
+  }
+
+  const clearAllFilters = () => {
+    setSearchTerm('')
+    setConditionFilter('all')
+    setPriceRangeFilter('all')
+    setRatingFilter('all')
+    setShapeFilter('all')
+  }
+
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 >= 0.5
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+    
+    return (
+      <span>
+        {'⭐'.repeat(fullStars)}
+        {hasHalfStar && '⭐'}
+        {'☆'.repeat(emptyStars)}
+      </span>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-slate-600">
-                  {phones.length} devices
-                </span>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <Navbar deviceCount={phones.length} currentPage="browse" />
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -154,6 +206,57 @@ export default function Home() {
           <p className="text-lg text-slate-600">
             Compare flip phones, dumbphones, and minimalist devices designed for mindful living
           </p>
+        </div>
+
+        {/* Getting Started Section */}
+        <div className="mb-8">
+          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-slate-800 mb-2">🚀 Getting Started</h3>
+              <p className="text-slate-600 text-sm">New to flip phones? Start with these essential guides</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <a href="/guides/buyers-guide" className="group bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
+                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">📘</div>
+                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">Complete Buyer's Guide</h4>
+                <p className="text-slate-600 text-xs mb-2">Everything you need to know before buying your first flip phone</p>
+                <div className="flex items-center text-xs text-slate-500">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">Beginner</span>
+                  <span>15 min read</span>
+                </div>
+              </a>
+
+              <a href="/guides/digital-detox" className="group bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
+                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">🧘</div>
+                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-emerald-700 transition-colors">Digital Detox Guide</h4>
+                <p className="text-slate-600 text-xs mb-2">Step-by-step plan to reduce screen time and digital dependency</p>
+                <div className="flex items-center text-xs text-slate-500">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">Beginner</span>
+                  <span>12 min read</span>
+                </div>
+              </a>
+
+              <a href="/guides/switching-guide" className="group bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
+                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">🔄</div>
+                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-purple-700 transition-colors">Switching Made Easy</h4>
+                <p className="text-slate-600 text-xs mb-2">Practical tips for transitioning from smartphone to flip phone</p>
+                <div className="flex items-center text-xs text-slate-500">
+                  <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full mr-2">Intermediate</span>
+                  <span>10 min read</span>
+                </div>
+              </a>
+            </div>
+
+            <div className="text-center mt-6">
+              <a href="/guides" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 text-sm">
+                View All Guides
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -215,7 +318,7 @@ export default function Home() {
               {uniqueConditions.map(condition => (
                 <button
                   key={condition}
-                  onClick={() => setConditionFilter(condition)}
+                  onClick={() => setConditionFilter(condition || '')}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${conditionFilter === condition
                     ? condition === 'New'
                       ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg'
@@ -242,10 +345,10 @@ export default function Home() {
                 All Prices
               </button>
               {[
+                { value: 'under-50', label: '💰 Under $50' },
                 { value: 'under-100', label: '💰 Under $100' },
-                { value: '100-300', label: '💰 $100-$300' },
-                { value: '300-600', label: '💰 $300-$600' },
-                { value: 'over-600', label: '💰 Over $600' }
+                { value: '100-250', label: '💰 $100-$250' },
+                { value: '250-plus', label: '💰 $250+' },
               ].map(price => (
                 <button
                   key={price.value}
@@ -259,10 +362,66 @@ export default function Home() {
                 </button>
               ))}
             </div>
+
+            {/* Rating Pills */}
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setRatingFilter('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${ratingFilter === 'all'
+                  ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
+                  : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                  }`}
+              >
+                All Ratings
+              </button>
+              {[
+                { value: '3-plus', label: '⭐ 3+ Stars' },
+                { value: '4-plus', label: '⭐ 4+ Stars' },
+                { value: '5-star', label: '⭐ 5 Stars' },
+              ].map(rating => (
+                <button
+                  key={rating.value}
+                  onClick={() => setRatingFilter(rating.value)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${ratingFilter === rating.value
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg'
+                    : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                    }`}
+                >
+                  {rating.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Shape/Form Factor Pills */}
+            {uniqueShapes.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setShapeFilter('all')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${shapeFilter === 'all'
+                    ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
+                    : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                    }`}
+                >
+                  All Shapes
+                </button>
+                {uniqueShapes.map(shape => shape && (
+                  <button
+                    key={shape}
+                    onClick={() => setShapeFilter(shape)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${shapeFilter === shape
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg'
+                      : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                      }`}
+                  >
+                    📱 {shape.charAt(0).toUpperCase() + shape.slice(1)}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Active Filters Summary */}
-          {(searchTerm || conditionFilter !== 'all' || priceRangeFilter !== 'all') && (
+          {(searchTerm || conditionFilter !== 'all' || priceRangeFilter !== 'all' || ratingFilter !== 'all' || shapeFilter !== 'all') && (
             <div className="mt-4 text-center">
               <div className="inline-flex items-center px-4 py-2 bg-white/80 rounded-xl border border-slate-200">
                 <span className="text-sm text-slate-600 mr-3">Active filters:</span>
@@ -300,13 +459,31 @@ export default function Home() {
                       </button>
                     </span>
                   )}
+                  {ratingFilter !== 'all' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-amber-100 text-amber-800">
+                      {ratingFilter === '3-plus' ? '3+ Stars' : ratingFilter === '4-plus' ? '4+ Stars' : '5 Stars'}
+                      <button
+                        onClick={() => setRatingFilter('all')}
+                        className="ml-1 text-amber-600 hover:text-amber-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
+                  {shapeFilter !== 'all' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-pink-100 text-pink-800">
+                      {shapeFilter.charAt(0).toUpperCase() + shapeFilter.slice(1)}
+                      <button
+                        onClick={() => setShapeFilter('all')}
+                        className="ml-1 text-pink-600 hover:text-pink-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
                 </div>
                 <button
-                  onClick={() => {
-                    setSearchTerm('')
-                    setConditionFilter('all')
-                    setPriceRangeFilter('all')
-                  }}
+                  onClick={clearAllFilters}
                   className="ml-3 text-xs text-slate-500 hover:text-slate-700 underline"
                 >
                   Clear all
@@ -394,13 +571,22 @@ export default function Home() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredAndSortedPhones.map((phone, index) => (
-                    <tr 
-                      key={phone.id} 
-                      onClick={() => handlePhoneClick(phone.id)}
-                      className="hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer"
+                    <tr
+                      key={phone.id}
+                      onClick={() => handlePhoneClick(phone.id.toString())}
+                      className={`hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer ${
+                        phone.featured ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400' : ''
+                      }`}
                     >
                       <td className="px-8 py-6">
-                        <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200">{phone.brand || 'Unknown'}</div>
+                        <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200 flex items-center">
+                          {phone.brand || 'Unknown'}
+                          {phone.featured && (
+                            <span className="ml-2 text-amber-500" title="Featured Phone">
+                              ⭐
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-8 py-6">
                         <div className="text-slate-800 font-medium">{phone.name || 'Unknown'}</div>
@@ -431,7 +617,7 @@ export default function Home() {
                       <td className="px-8 py-6">
                         <div className="text-lg">
                           {phone.rating ? (
-                            <span className="text-amber-400">{'⭐'.repeat(phone.rating)}</span>
+                            <span className="text-amber-400">{renderStars(phone.rating)}</span>
                           ) : (
                             <span className="text-slate-400 text-sm">No rating</span>
                           )}
@@ -439,22 +625,42 @@ export default function Home() {
                       </td>
                       <td className="px-8 py-6">
                         <div className="text-sm text-slate-600 max-w-xs leading-relaxed">
-                          <span className="italic text-slate-400">No description available</span>
+                          {phone.description ? (
+                            <span className="text-slate-700">{phone.description}</span>
+                          ) : (
+                            <span className="italic text-slate-400">No description available</span>
+                          )}
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handlePhoneClick(phone.id)
-                          }}
-                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
-                        >
-                          View Details
-                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handlePhoneClick(phone.id.toString())
+                            }}
+                            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
+                          >
+                            View Details
+                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                          {phone.link && (
+                            <a
+                              href={phone.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-sm font-semibold rounded-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
+                            >
+                              🛒 Buy Now
+                              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6a2 2 0 002 2v1m-6 8a2 2 0 002-2v-1" />
+                              </svg>
+                            </a>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

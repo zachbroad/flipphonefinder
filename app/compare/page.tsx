@@ -43,13 +43,45 @@ export default function Compare() {
     setSelectedPhones(selectedPhones.filter(p => p.id !== phoneId))
   }
 
-  const formatEnumValue = (value: string | null) => {
+  const formatEnumValue = (value: any) => {
     if (!value) return 'N/A'
-    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    
+    // Handle different data types from jsonb fields
+    if (typeof value === 'string') {
+      return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    }
+    
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No'
+    }
+    
+    if (Array.isArray(value)) {
+      return value.join(', ')
+    }
+    
+    if (typeof value === 'object') {
+      return JSON.stringify(value)
+    }
+    
+    return String(value)
   }
 
   const getBooleanIcon = (value: boolean) => {
     return value ? '✅' : '❌'
+  }
+
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 >= 0.5
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+    
+    return (
+      <span>
+        {'⭐'.repeat(fullStars)}
+        {hasHalfStar && '⭐'}
+        {'☆'.repeat(emptyStars)}
+      </span>
+    )
   }
 
   const comparisonFeatures = [
@@ -98,7 +130,7 @@ export default function Compare() {
       case 'price':
         return value ? `$${parseFloat(value as string).toLocaleString()}` : 'N/A'
       case 'rating':
-        return value ? '⭐'.repeat(value as number) : 'No rating'
+        return value ? renderStars(value as number) : 'No rating'
       case 'enum':
         return formatEnumValue(value as string)
       case 'boolean':

@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import type { Phone } from '@/types/phone'
+import { db, phone } from '@/lib/db'
 
 export async function GET() {
   try {
-    const phones: Phone[] = await prisma.phone.findMany();
+    const phones = await db.select().from(phone)
 
     return NextResponse.json(phones)
   } catch (error) {
