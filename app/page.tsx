@@ -185,10 +185,26 @@ export default function Home() {
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
     
     return (
-      <span>
-        {'⭐'.repeat(fullStars)}
-        {hasHalfStar && '⭐'}
-        {'☆'.repeat(emptyStars)}
+      <span className="flex items-center">
+        {/* Full stars */}
+        {Array.from({ length: fullStars }).map((_, i) => (
+          <span key={`full-${i}`} className="text-amber-400">⭐</span>
+        ))}
+        
+        {/* Half star */}
+        {hasHalfStar && (
+          <span className="relative">
+            <span className="text-gray-300">☆</span>
+            <span className="absolute inset-0 text-amber-400 overflow-hidden" style={{ width: '50%' }}>
+              ⭐
+            </span>
+          </span>
+        )}
+        
+        {/* Empty stars */}
+        {Array.from({ length: emptyStars }).map((_, i) => (
+          <span key={`empty-${i}`} className="text-gray-300">☆</span>
+        ))}
       </span>
     )
   }

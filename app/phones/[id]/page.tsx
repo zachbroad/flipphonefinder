@@ -120,9 +120,25 @@ export default function PhoneDetailPage() {
     
     return (
       <div className="flex items-center">
-        {'⭐'.repeat(fullStars)}
-        {hasHalfStar && '⭐'}
-        {'☆'.repeat(emptyStars)}
+        {/* Full stars */}
+        {Array.from({ length: fullStars }).map((_, i) => (
+          <span key={`full-${i}`} className="text-amber-400 text-2xl">⭐</span>
+        ))}
+        
+        {/* Half star */}
+        {hasHalfStar && (
+          <span className="relative text-2xl">
+            <span className="text-gray-300">☆</span>
+            <span className="absolute inset-0 text-amber-400 overflow-hidden" style={{ width: '50%' }}>
+              ⭐
+            </span>
+          </span>
+        )}
+        
+        {/* Empty stars */}
+        {Array.from({ length: emptyStars }).map((_, i) => (
+          <span key={`empty-${i}`} className="text-gray-300 text-2xl">☆</span>
+        ))}
       </div>
     )
   }
