@@ -1,26 +1,8 @@
+
 export default function Contact() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Header */}
         <div className="text-center mb-12">
@@ -28,7 +10,7 @@ export default function Contact() {
             Contact Us
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Have questions about digital wellness devices? We're here to help you find the perfect flip phone or dumbphone.
+            Have questions about digital wellness devices? We&apos;re here to help you find the perfect flip phone or dumbphone.
           </p>
         </div>
 
@@ -110,7 +92,7 @@ export default function Contact() {
                       <p className="text-slate-600">United States</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start space-x-4">
                     <div className="bg-indigo-100 rounded-full p-3">
                       <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,7 +105,7 @@ export default function Contact() {
                       <p className="text-sm text-slate-500">We typically respond within 24 hours</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start space-x-4">
                     <div className="bg-indigo-100 rounded-full p-3">
                       <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,11 +130,11 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-800">Do you sell phones directly?</h3>
-                    <p className="text-sm text-slate-600">No, we're an information resource. We provide links to trusted retailers where you can purchase devices.</p>
+                    <p className="text-sm text-slate-600">No, we&apos;re an information resource. We provide links to trusted retailers where you can purchase devices.</p>
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-800">Can you recommend a specific phone for me?</h3>
-                    <p className="text-sm text-slate-600">Absolutely! Contact us with your needs and we'll provide personalized recommendations.</p>
+                    <p className="text-sm text-slate-600">Absolutely! Contact us with your needs and we&apos;ll provide personalized recommendations.</p>
                   </div>
                 </div>
               </div>

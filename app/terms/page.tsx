@@ -1,26 +1,9 @@
+import Link from "next/link";
+
 export default function Terms() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Content */}
         <div className="max-w-4xl mx-auto">
@@ -47,7 +30,7 @@ export default function Terms() {
 
               <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4">3. Disclaimer</h2>
               <p className="text-slate-600 mb-6">
-                The materials on FlipPhoneFinder are provided on an 'as is' basis. Broad Publications LLC makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+                The materials on FlipPhoneFinder are provided on an &apos;as is&apos; basis. Broad Publications LLC makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
               </p>
 
               <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4">4. Product Information</h2>
@@ -77,7 +60,7 @@ export default function Terms() {
 
               <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4">8. Privacy</h2>
               <p className="text-slate-600 mb-6">
-                Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.
+                Your privacy is important to us. Please review our <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700 transition-colors">Privacy Policy</Link>, which also governs your use of the service, to understand our practices.
               </p>
 
               <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4">9. Termination</h2>

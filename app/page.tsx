@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Navbar from '@/components/Navbar'
+import { useEffect, useState } from 'react'
 
 interface Phone {
   id: string
@@ -12,7 +12,7 @@ interface Phone {
   description: string | null
   featured: boolean | null
   link: string | null
-  shape: any
+  shape: string | null
   price: string | null
   rating: number | null
   condition: string | null
@@ -98,7 +98,7 @@ export default function Home() {
         let shape = phone.shape
         if (typeof shape === 'object' && shape !== null) {
           if (Array.isArray(shape)) {
-            shape = shape.join(' ')
+            shape = shape.join(' ') as string
           } else {
             shape = JSON.stringify(shape)
           }
@@ -116,17 +116,20 @@ export default function Home() {
       }
 
       // Then sort by the selected field
-      let aValue: any = a[sortField]
-      let bValue: any = b[sortField]
+      let aValue: string | number | null = a[sortField]
+      let bValue: string | number | null = b[sortField]
 
       if (sortField === 'price') {
         aValue = parseFloat(a.price || '0') || 0
         bValue = parseFloat(b.price || '0') || 0
+        if (typeof aValue !== 'number' || typeof bValue !== 'number') {
+          return 0
+        }
       }
 
       if (typeof aValue === 'string') {
         aValue = aValue.toLowerCase()
-        bValue = bValue.toLowerCase()
+        bValue = bValue?.toLowerCase() ?? ''
       }
 
       if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
@@ -152,14 +155,14 @@ export default function Home() {
   }
 
   const uniqueConditions = [...new Set(phones.map(phone => phone.condition).filter(Boolean))]
-  
+
   const uniqueShapes = [...new Set(phones.map(phone => {
     if (!phone.shape) return null
     // Handle jsonb data - could be string, array, or object
     let shape = phone.shape
     if (typeof shape === 'object' && shape !== null) {
       if (Array.isArray(shape)) {
-        shape = shape.join(' ')
+        shape = shape.join(' ') as string
       } else {
         shape = JSON.stringify(shape)
       }
@@ -183,14 +186,14 @@ export default function Home() {
     const fullStars = Math.floor(rating)
     const hasHalfStar = rating % 1 >= 0.5
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-    
+
     return (
       <span className="flex items-center">
         {/* Full stars */}
         {Array.from({ length: fullStars }).map((_, i) => (
           <span key={`full-${i}`} className="text-amber-400">⭐</span>
         ))}
-        
+
         {/* Half star */}
         {hasHalfStar && (
           <span className="relative">
@@ -200,7 +203,7 @@ export default function Home() {
             </span>
           </span>
         )}
-        
+
         {/* Empty stars */}
         {Array.from({ length: emptyStars }).map((_, i) => (
           <span key={`empty-${i}`} className="text-gray-300">☆</span>
@@ -212,7 +215,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        <Navbar deviceCount={phones.length} currentPage="browse" />
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -235,7 +237,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <a href="/guides/buyers-guide" className="group bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
                 <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">📘</div>
-                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">Complete Buyer's Guide</h4>
+                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">{`Complete Buyer's Guide`}</h4>
                 <p className="text-slate-600 text-xs mb-2">Everything you need to know before buying your first flip phone</p>
                 <div className="flex items-center text-xs text-slate-500">
                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">Beginner</span>
@@ -444,7 +446,7 @@ export default function Home() {
                 <div className="flex flex-wrap gap-2">
                   {searchTerm && (
                     <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-100 text-blue-800">
-                      "{searchTerm}"
+                      {`"${searchTerm}"`}
                       <button
                         onClick={() => setSearchTerm('')}
                         className="ml-1 text-blue-600 hover:text-blue-800"
@@ -586,13 +588,12 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filteredAndSortedPhones.map((phone, index) => (
+                  {filteredAndSortedPhones.map((phone) => (
                     <tr
                       key={phone.id}
                       onClick={() => handlePhoneClick(phone.id.toString())}
-                      className={`hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer ${
-                        phone.featured ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400' : ''
-                      }`}
+                      className={`hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer ${phone.featured ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400' : ''
+                        }`}
                     >
                       <td className="px-8 py-6">
                         <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200 flex items-center">
@@ -751,11 +752,11 @@ export default function Home() {
               <div>
                 <h4 className="text-lg font-bold text-slate-800 mb-4">Resources</h4>
                 <div className="space-y-2 text-sm">
-                  <a href="/guides" className="block text-slate-600 hover:text-indigo-600 transition-colors">Digital Wellness Guide</a>
-                  <a href="/compare" className="block text-slate-600 hover:text-indigo-600 transition-colors">Phone Comparison Tool</a>
-                  <a href="/guides/buyers-guide" className="block text-slate-600 hover:text-indigo-600 transition-colors">Buyer's Guide</a>
-                  <a href="/blog" className="block text-slate-600 hover:text-indigo-600 transition-colors">Blog & Reviews</a>
-                  <a href="/contact" className="block text-slate-600 hover:text-indigo-600 transition-colors">Support Center</a>
+                  <Link href="/guides" className="block text-slate-600 hover:text-indigo-600 transition-colors">Digital Wellness Guide</Link>
+                  <Link href="/compare" className="block text-slate-600 hover:text-indigo-600 transition-colors">Phone Comparison Tool</Link>
+                  <Link href="/guides/buyers-guide" className="block text-slate-600 hover:text-indigo-600 transition-colors">{`Buyer's Guide`}</Link>
+                  <Link href="/blog" className="block text-slate-600 hover:text-indigo-600 transition-colors">{`Blog & Reviews`}</Link>
+                  <Link href="/contact" className="block text-slate-600 hover:text-indigo-600 transition-colors">Support Center</Link>
                 </div>
               </div>
             </div>

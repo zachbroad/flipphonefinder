@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Guides() {
   const guides = [
     {
@@ -76,16 +78,16 @@ export default function Guides() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
+                <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
                   📱 FlipPhoneFinder
-                </a>
+                </Link>
               </div>
               <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
+                <Link href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</Link>
+                <Link href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</Link>
+                <Link href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</Link>
+                <Link href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</Link>
+                <Link href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</Link>
               </div>
             </div>
           </div>
@@ -163,11 +165,10 @@ export default function Guides() {
                   {guide.icon}
                 </div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                    guide.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
+                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${guide.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
                     guide.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                      'bg-red-100 text-red-800'
+                    }`}>
                     {guide.difficulty}
                   </span>
                   <span className="text-sm text-slate-500">{guide.readTime}</span>
@@ -238,9 +239,9 @@ export default function Guides() {
               <a href="/contact" className="px-6 py-3 bg-white text-emerald-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
                 Get Expert Advice
               </a>
-              <a href="/blog" className="px-6 py-3 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-400 transition-colors">
+              <Link href="/blog" className="px-6 py-3 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-400 transition-colors">
                 Read Our Blog
-              </a>
+              </Link>
             </div>
           </div>
         </div>

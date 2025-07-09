@@ -4,25 +4,6 @@ export default function SwitchingGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Back to Guides */}
         <div className="mb-8">
@@ -58,11 +39,11 @@ export default function SwitchingGuide() {
         {/* Content */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
-            
+
             {/* Pre-Switch Checklist */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📋 Pre-Switch Preparation Checklist</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-slate-800 mb-4">📱 Digital Preparation</h3>
@@ -137,7 +118,7 @@ export default function SwitchingGuide() {
             {/* Transition Strategies */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🎯 Transition Strategies</h2>
-              
+
               <div className="space-y-6">
                 <div className="border border-blue-200 rounded-xl p-6 bg-blue-50">
                   <h3 className="text-xl font-bold text-blue-800 mb-4">🐌 Strategy 1: Gradual Transition (Recommended for Beginners)</h3>
@@ -228,7 +209,7 @@ export default function SwitchingGuide() {
             {/* Common Challenges */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🚧 Common Challenges & Solutions</h2>
-              
+
               <div className="space-y-6">
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-slate-800 mb-4">📍 Navigation Without GPS</h3>
@@ -273,7 +254,7 @@ export default function SwitchingGuide() {
                         <li>• <strong>Learn shortcuts:</strong> Use predictive suggestions</li>
                         <li>• <strong>Common words first:</strong> Master frequently used words</li>
                         <li>• <strong>Be patient:</strong> Speed improves with time</li>
-                        <li>• <strong>Use abbreviations:</strong> "u" for "you", etc.</li>
+                        <li>• <strong>Use abbreviations:</strong> {`"u" for "you", etc.`}</li>
                       </ul>
                     </div>
                     <div>
@@ -327,26 +308,26 @@ export default function SwitchingGuide() {
             {/* Social Aspects */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">👥 Managing Social Expectations</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-slate-800 mb-4">💬 Common Reactions & Responses</h3>
                   <div className="space-y-4">
                     <div>
-                      <p className="font-medium text-slate-700">"Why would you do that?"</p>
-                      <p className="text-sm text-slate-600 italic">"I'm focusing on digital wellness and being more present in real life."</p>
+                      <p className="font-medium text-slate-700">{`"Why would you do that?"`}</p>
+                      <p className="text-sm text-slate-600 italic">{`"I'm focusing on digital wellness and being more present in real life."`}</p>
                     </div>
                     <div>
-                      <p className="font-medium text-slate-700">"How do I reach you?"</p>
-                      <p className="text-sm text-slate-600 italic">"Call or text me! I just check messages less frequently now."</p>
+                      <p className="font-medium text-slate-700">{`"How do I reach you?"`}</p>
+                      <p className="text-sm text-slate-600 italic">{`"Call or text me! I just check messages less frequently now."`}</p>
                     </div>
                     <div>
-                      <p className="font-medium text-slate-700">"You're missing out!"</p>
-                      <p className="text-sm text-slate-600 italic">"I'm actually experiencing more by being present in the moment."</p>
+                      <p className="font-medium text-slate-700">{`"You're missing out!"`}</p>
+                      <p className="text-sm text-slate-600 italic">{`"I'm actually experiencing more by being present in the moment."`}</p>
                     </div>
                     <div>
-                      <p className="font-medium text-slate-700">"That's so inconvenient!"</p>
-                      <p className="text-sm text-slate-600 italic">"The slight inconvenience is worth the mental clarity I've gained."</p>
+                      <p className="font-medium text-slate-700">{`"That's so inconvenient!"`}</p>
+                      <p className="text-sm text-slate-600 italic">{`"The slight inconvenience is worth the mental clarity I've gained."`}</p>
                     </div>
                   </div>
                 </div>
@@ -356,19 +337,19 @@ export default function SwitchingGuide() {
                   <div className="space-y-3">
                     <div>
                       <h4 className="font-semibold text-slate-700">Response Time Expectations:</h4>
-                      <p className="text-sm text-slate-600">"I check messages 2-3 times per day. For urgent matters, please call."</p>
+                      <p className="text-sm text-slate-600">{`"I check messages 2-3 times per day. For urgent matters, please call."`}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-slate-700">Emergency Contact:</h4>
-                      <p className="text-sm text-slate-600">"For true emergencies, call this number: [your flip phone number]"</p>
+                      <p className="text-sm text-slate-600">{`"For true emergencies, call this number: [your flip phone number]"`}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-slate-700">Social Media:</h4>
-                      <p className="text-sm text-slate-600">"I'll catch up on social media when I'm at my computer."</p>
+                      <p className="text-sm text-slate-600">{`"I'll catch up on social media when I'm at my computer."`}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-slate-700">Group Messages:</h4>
-                      <p className="text-sm text-slate-600">"Please add me to important group decisions, but I won't be chatting constantly."</p>
+                      <p className="text-sm text-slate-600">{`"Please add me to important group decisions, but I won't be chatting constantly."`}</p>
                     </div>
                   </div>
                 </div>
@@ -378,29 +359,29 @@ export default function SwitchingGuide() {
             {/* Success Timeline */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📈 What to Expect: Success Timeline</h2>
-              
+
               <div className="space-y-6">
                 <div className="border-l-4 border-red-400 bg-red-50 p-6 rounded-r-xl">
                   <h3 className="font-bold text-red-800 mb-2">Days 1-3: The Adjustment Period</h3>
-                  <p className="text-red-700 text-sm mb-2">You'll likely feel anxious and reach for your smartphone out of habit.</p>
+                  <p className="text-red-700 text-sm mb-2">{`You'll likely feel anxious and reach for your smartphone out of habit.`}</p>
                   <p className="text-red-600 text-xs"><strong>Normal:</strong> Phantom notification syndrome, boredom, FOMO</p>
                 </div>
 
                 <div className="border-l-4 border-yellow-400 bg-yellow-50 p-6 rounded-r-xl">
                   <h3 className="font-bold text-yellow-800 mb-2">Days 4-7: Finding Your Rhythm</h3>
-                  <p className="text-yellow-700 text-sm mb-2">You'll start developing new habits and routines.</p>
+                  <p className="text-yellow-700 text-sm mb-2">{`You'll start developing new habits and routines.`}</p>
                   <p className="text-yellow-600 text-xs"><strong>Progress:</strong> Improved T9 speed, better focus, initial sleep improvements</p>
                 </div>
 
                 <div className="border-l-4 border-blue-400 bg-blue-50 p-6 rounded-r-xl">
                   <h3 className="font-bold text-blue-800 mb-2">Days 8-14: Settling In</h3>
-                  <p className="text-blue-700 text-sm mb-2">The new routine feels more natural and comfortable.</p>
+                  <p className="text-blue-700 text-sm mb-2">{`The new routine feels more natural and comfortable.`}</p>
                   <p className="text-blue-600 text-xs"><strong>Benefits:</strong> Clearer thinking, more present conversations, reduced anxiety</p>
                 </div>
 
                 <div className="border-l-4 border-green-400 bg-green-50 p-6 rounded-r-xl">
                   <h3 className="font-bold text-green-800 mb-2">Days 15-30: The New Normal</h3>
-                  <p className="text-green-700 text-sm mb-2">You've successfully integrated flip phone life into your routine.</p>
+                  <p className="text-green-700 text-sm mb-2">{`You've successfully integrated flip phone life into your routine.`}</p>
                   <p className="text-green-600 text-xs"><strong>Results:</strong> Stable sleep, deeper relationships, increased productivity</p>
                 </div>
               </div>
@@ -409,7 +390,7 @@ export default function SwitchingGuide() {
             {/* Emergency Preparedness */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🚨 Emergency Preparedness</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-red-200 rounded-xl p-6 bg-red-50">
                   <h3 className="text-lg font-bold text-red-800 mb-4">🆘 Emergency Contacts</h3>

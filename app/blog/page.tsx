@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Blog() {
   const posts = [
     {
@@ -70,25 +72,6 @@ export default function Blog() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Header */}
         <div className="text-center mb-12">
@@ -191,7 +174,7 @@ export default function Blog() {
               </button>
             </div>
             <p className="text-xs text-indigo-200 mt-4">
-              No spam, unsubscribe anytime. Read our <a href="/privacy" className="underline">privacy policy</a>.
+              No spam, unsubscribe anytime. Read our <Link href="/privacy" className="underline">privacy policy</Link>.
             </p>
           </div>
         </div>

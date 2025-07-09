@@ -4,25 +4,6 @@ export default function DigitalDetoxGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Back to Guides */}
         <div className="mb-8">
@@ -58,7 +39,7 @@ export default function DigitalDetoxGuide() {
         {/* Content */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
-            
+
             {/* Quick Assessment */}
             <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-6 mb-8">
               <h2 className="text-xl font-bold text-red-800 mb-4">📊 Quick Assessment: Do You Need a Digital Detox?</h2>
@@ -80,7 +61,7 @@ export default function DigitalDetoxGuide() {
                     </label>
                     <label className="flex items-center">
                       <input type="checkbox" className="mr-2" />
-                      You've missed real-world moments while on your phone
+                      You&apos;ve missed real-world moments while on your phone
                     </label>
                     <label className="flex items-center">
                       <input type="checkbox" className="mr-2" />
@@ -124,7 +105,7 @@ export default function DigitalDetoxGuide() {
             {/* 30-Day Plan */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📅 Your 30-Day Digital Detox Plan</h2>
-              
+
               <div className="space-y-8">
                 {/* Week 1 */}
                 <div className="border border-slate-200 rounded-xl p-6">
@@ -132,7 +113,7 @@ export default function DigitalDetoxGuide() {
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">1</div>
                     <h3 className="text-2xl font-bold text-slate-800">Week 1: Assessment & Preparation</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-700 mb-3">📱 Days 1-3: Baseline Measurement</h4>
@@ -155,7 +136,7 @@ export default function DigitalDetoxGuide() {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 bg-blue-50 rounded-lg p-4">
                     <h5 className="font-semibold text-blue-800 mb-2">🎯 Week 1 Goal:</h5>
                     <p className="text-blue-700 text-sm">Reduce daily screen time by 30 minutes and establish awareness of usage patterns.</p>
@@ -168,7 +149,7 @@ export default function DigitalDetoxGuide() {
                     <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">2</div>
                     <h3 className="text-2xl font-bold text-slate-800">Week 2: Gradual Transition</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-700 mb-3">🔄 Days 8-10: Smartphone Limits</h4>
@@ -191,7 +172,7 @@ export default function DigitalDetoxGuide() {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 bg-emerald-50 rounded-lg p-4">
                     <h5 className="font-semibold text-emerald-800 mb-2">🎯 Week 2 Goal:</h5>
                     <p className="text-emerald-700 text-sm">Successfully use flip phone for basic communication 8+ hours daily.</p>
@@ -204,7 +185,7 @@ export default function DigitalDetoxGuide() {
                     <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">3</div>
                     <h3 className="text-2xl font-bold text-slate-800">Week 3: Full Commitment</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-700 mb-3">📵 Days 15-18: Flip Phone Primary</h4>
@@ -227,7 +208,7 @@ export default function DigitalDetoxGuide() {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 bg-amber-50 rounded-lg p-4">
                     <h5 className="font-semibold text-amber-800 mb-2">🎯 Week 3 Goal:</h5>
                     <p className="text-amber-700 text-sm">Complete entire days using only flip phone while maintaining productivity.</p>
@@ -240,7 +221,7 @@ export default function DigitalDetoxGuide() {
                     <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">4</div>
                     <h3 className="text-2xl font-bold text-slate-800">Week 4: Integration & Long-term Planning</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-700 mb-3">🌱 Days 22-25: Lifestyle Integration</h4>
@@ -263,7 +244,7 @@ export default function DigitalDetoxGuide() {
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 bg-purple-50 rounded-lg p-4">
                     <h5 className="font-semibold text-purple-800 mb-2">🎯 Week 4 Goal:</h5>
                     <p className="text-purple-700 text-sm">Develop sustainable long-term digital wellness habits and routines.</p>
@@ -275,10 +256,10 @@ export default function DigitalDetoxGuide() {
             {/* Challenges & Solutions */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🚧 Common Challenges & Solutions</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-red-200 rounded-xl p-6 bg-red-50">
-                  <h4 className="text-lg font-bold text-red-800 mb-3">😰 "I feel anxious without my phone"</h4>
+                  <h4 className="text-lg font-bold text-red-800 mb-3">{`😰 "I feel anxious without my phone"`}</h4>
                   <div className="text-sm text-red-700 space-y-2">
                     <p><strong>Solution:</strong> Start with short 30-minute periods without your phone. Gradually increase duration.</p>
                     <p><strong>Practice:</strong> Deep breathing exercises when feeling phone withdrawal.</p>
@@ -287,25 +268,25 @@ export default function DigitalDetoxGuide() {
                 </div>
 
                 <div className="border border-blue-200 rounded-xl p-6 bg-blue-50">
-                  <h4 className="text-lg font-bold text-blue-800 mb-3">📍 "I need GPS everywhere I go"</h4>
+                  <h4 className="text-lg font-bold text-blue-800 mb-3">{`📍 "I need GPS everywhere I go"`}</h4>
                   <div className="text-sm text-blue-700 space-y-2">
                     <p><strong>Solution:</strong> Write down directions before leaving. Use a dedicated GPS device.</p>
-                    <p><strong>Practice:</strong> Ask for directions - it's a great conversation starter!</p>
+                    <p><strong>Practice:</strong> Ask for directions - it&apos;s a great conversation starter!</p>
                     <p><strong>Remember:</strong> People navigated for thousands of years without GPS.</p>
                   </div>
                 </div>
 
                 <div className="border border-green-200 rounded-xl p-6 bg-green-50">
-                  <h4 className="text-lg font-bold text-green-800 mb-3">💬 "My friends think I'm weird"</h4>
+                  <h4 className="text-lg font-bold text-green-800 mb-3">{`💬 "My friends think I'm weird"`}</h4>
                   <div className="text-sm text-green-700 space-y-2">
                     <p><strong>Solution:</strong> Explain your goals and invite them to try it too.</p>
-                    <p><strong>Practice:</strong> Show them the benefits you're experiencing.</p>
+                    <p><strong>Practice:</strong> Show them the benefits you&apos;re experiencing.</p>
                     <p><strong>Remember:</strong> True friends will support your wellness journey.</p>
                   </div>
                 </div>
 
                 <div className="border border-purple-200 rounded-xl p-6 bg-purple-50">
-                  <h4 className="text-lg font-bold text-purple-800 mb-3">💼 "I need it for work"</h4>
+                  <h4 className="text-lg font-bold text-purple-800 mb-3">{`💼 "I need it for work"`}</h4>
                   <div className="text-sm text-purple-700 space-y-2">
                     <p><strong>Solution:</strong> Designate specific work hours for smartphone use.</p>
                     <p><strong>Practice:</strong> Use flip phone for personal time, smartphone for work only.</p>
@@ -318,7 +299,7 @@ export default function DigitalDetoxGuide() {
             {/* Progress Tracking */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📊 Track Your Progress</h2>
-              
+
               <div className="bg-slate-50 rounded-xl p-6">
                 <h4 className="text-lg font-bold text-slate-800 mb-4">📝 Weekly Check-In Questions</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -349,20 +330,20 @@ export default function DigitalDetoxGuide() {
             {/* Success Metrics */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🏆 Signs of Success</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-6 bg-green-50 border border-green-200 rounded-xl">
                   <div className="text-4xl mb-3">😴</div>
                   <h4 className="font-bold text-green-800 mb-2">Better Sleep</h4>
                   <p className="text-sm text-green-700">Falling asleep faster, sleeping deeper, waking up more refreshed</p>
                 </div>
-                
+
                 <div className="text-center p-6 bg-blue-50 border border-blue-200 rounded-xl">
                   <div className="text-4xl mb-3">🎯</div>
                   <h4 className="font-bold text-blue-800 mb-2">Improved Focus</h4>
                   <p className="text-sm text-blue-700">Ability to concentrate for longer periods without digital distractions</p>
                 </div>
-                
+
                 <div className="text-center p-6 bg-purple-50 border border-purple-200 rounded-xl">
                   <div className="text-4xl mb-3">❤️</div>
                   <h4 className="font-bold text-purple-800 mb-2">Stronger Relationships</h4>
@@ -376,18 +357,18 @@ export default function DigitalDetoxGuide() {
               <h3 className="text-2xl font-bold mb-4">🚀 Ready to Start Your Digital Detox?</h3>
               <p className="text-indigo-100 mb-6">Take the first step towards digital wellness today.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
+                <Link
                   href="/guides/buyers-guide"
                   className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors"
                 >
                   Choose Your Flip Phone
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/guides/switching-guide"
                   className="px-6 py-3 bg-indigo-500 text-white font-semibold rounded-xl hover:bg-indigo-400 transition-colors"
                 >
                   Learn How to Switch
-                </a>
+                </Link>
               </div>
             </div>
           </div>

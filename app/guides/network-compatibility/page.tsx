@@ -4,25 +4,6 @@ export default function NetworkCompatibilityGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Back to Guides */}
         <div className="mb-8">
@@ -58,7 +39,7 @@ export default function NetworkCompatibilityGuide() {
         {/* Content */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
-            
+
             {/* Critical Alert */}
             <div className="bg-red-50 border-l-4 border-red-400 p-6 mb-8">
               <div className="flex items-center mb-3">
@@ -79,10 +60,10 @@ export default function NetworkCompatibilityGuide() {
             {/* Network Technologies */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📶 Understanding Network Technologies</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-slate-200 rounded-xl p-6">
-                  <h3 className="text-xl font-bold text-slate-800 mb-4">🔴 Obsolete Technologies (Don't Buy)</h3>
+                  <h3 className="text-xl font-bold text-slate-800 mb-4">{`🔴 Obsolete Technologies (Don't Buy)`}</h3>
                   <div className="space-y-4">
                     <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                       <h4 className="font-bold text-red-800 mb-2">2G (GSM/CDMA)</h4>
@@ -134,7 +115,7 @@ export default function NetworkCompatibilityGuide() {
             {/* VoLTE Explanation */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📞 VoLTE: Voice over LTE</h2>
-              
+
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
                 <h3 className="text-lg font-bold text-blue-800 mb-3">🎯 What is VoLTE?</h3>
                 <p className="text-blue-700 mb-3">VoLTE (Voice over LTE) allows voice calls to be made over 4G LTE networks instead of older 2G/3G networks. Since older networks are shut down, VoLTE is now <strong>essential</strong> for making voice calls.</p>
@@ -164,7 +145,7 @@ export default function NetworkCompatibilityGuide() {
             {/* Carrier Requirements */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">📋 Carrier-Specific Requirements</h2>
-              
+
               <div className="space-y-6">
                 <div className="border border-red-200 rounded-xl p-6 bg-red-50">
                   <div className="flex items-center mb-4">
@@ -175,7 +156,7 @@ export default function NetworkCompatibilityGuide() {
                     <div>
                       <h4 className="font-semibold text-red-800 mb-2">📋 Requirements:</h4>
                       <ul className="text-sm text-red-700 space-y-1">
-                        <li>• Must be on Verizon's certified device list</li>
+                        <li>{`• Must be on Verizon's certified device list`}</li>
                         <li>• VoLTE certification required</li>
                         <li>• CDMA/LTE bands: 2, 4, 5, 13</li>
                         <li>• Most restrictive carrier for unlocked devices</li>
@@ -184,8 +165,8 @@ export default function NetworkCompatibilityGuide() {
                     <div>
                       <h4 className="font-semibold text-red-800 mb-2">⚠️ Important Notes:</h4>
                       <ul className="text-sm text-red-700 space-y-1">
-                        <li>• Many unlocked phones won't work</li>
-                        <li>• Check Verizon's device database first</li>
+                        <li>{`• Many unlocked phones won't work`}</li>
+                        <li>{`• Check Verizon's device database first`}</li>
                         <li>• Consider Verizon-branded phones</li>
                         <li>• Call Verizon to verify compatibility</li>
                       </ul>
@@ -212,7 +193,7 @@ export default function NetworkCompatibilityGuide() {
                       <h4 className="font-semibold text-blue-800 mb-2">⚠️ Important Notes:</h4>
                       <ul className="text-sm text-blue-700 space-y-1">
                         <li>• Some unlocked devices blocked</li>
-                        <li>• Check AT&T's approved device list</li>
+                        <li>{`• Check AT&T's approved device list.`}</li>
                         <li>• May require AT&T SIM activation</li>
                         <li>• Consider AT&T-branded devices</li>
                       </ul>
@@ -252,7 +233,7 @@ export default function NetworkCompatibilityGuide() {
             {/* Compatibility Checking */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🔍 How to Check Compatibility</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-slate-800 mb-4">🛠️ Before You Buy</h3>
@@ -261,7 +242,7 @@ export default function NetworkCompatibilityGuide() {
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1">1</div>
                       <div>
                         <h4 className="font-semibold text-slate-700">Check Carrier Database</h4>
-                        <p className="text-sm text-slate-600">Look up the device model on your carrier's compatibility checker</p>
+                        <p className="text-sm text-slate-600">{`Look up the device model on your carrier's compatibility checker.`}</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
@@ -275,14 +256,14 @@ export default function NetworkCompatibilityGuide() {
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1">3</div>
                       <div>
                         <h4 className="font-semibold text-slate-700">Check Frequency Bands</h4>
-                        <p className="text-sm text-slate-600">Ensure the device supports your carrier's LTE bands</p>
+                        <p className="text-sm text-slate-600">{`Ensure the device supports your carrier's LTE bands.`}</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mt-1">4</div>
                       <div>
                         <h4 className="font-semibold text-slate-700">Contact Carrier Support</h4>
-                        <p className="text-sm text-slate-600">Call with the device's IMEI to verify compatibility</p>
+                        <p className="text-sm text-slate-600">{`Call with the device's IMEI to verify compatibility.`}</p>
                       </div>
                     </div>
                   </div>
@@ -327,11 +308,11 @@ export default function NetworkCompatibilityGuide() {
             {/* Technical Details */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🔧 Technical Deep Dive</h2>
-              
+
               <div className="space-y-6">
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-slate-800 mb-4">📊 LTE Frequency Bands by Carrier</h3>
-                  
+
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
@@ -364,7 +345,7 @@ export default function NetworkCompatibilityGuide() {
                       </tbody>
                     </table>
                   </div>
-                  
+
                   <div className="mt-4 text-xs text-slate-500">
                     <p><strong>Note:</strong> Primary bands are essential for good coverage. Secondary bands improve performance in dense areas. Rural/Extended bands provide coverage in remote areas.</p>
                   </div>
@@ -372,13 +353,13 @@ export default function NetworkCompatibilityGuide() {
 
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-slate-800 mb-4">🌐 International Considerations</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-700 mb-3">🇺🇸 US-Specific Features:</h4>
                       <ul className="text-sm text-slate-600 space-y-1">
                         <li>• Band 12/17 (700MHz) for rural coverage</li>
-                        <li>• Band 71 (T-Mobile's 600MHz)</li>
+                        <li>{`• Band 71 (T-Mobile's 600MHz).`}</li>
                         <li>• Enhanced 911 (E911) support</li>
                         <li>• Carrier aggregation for better speeds</li>
                       </ul>
@@ -400,10 +381,10 @@ export default function NetworkCompatibilityGuide() {
             {/* Troubleshooting */}
             <div className="mb-12">
               <h2 className="text-3xl font-bold text-slate-800 mb-6">🔧 Troubleshooting Common Issues</h2>
-              
+
               <div className="space-y-6">
                 <div className="border border-red-200 rounded-xl p-6 bg-red-50">
-                  <h3 className="text-lg font-bold text-red-800 mb-3">❌ "No Service" or "Emergency Calls Only"</h3>
+                  <h3 className="text-lg font-bold text-red-800 mb-3">{`❌ "No Service" or "Emergency Calls Only"`}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h4 className="font-semibold text-red-700 mb-2">Possible Causes:</h4>
@@ -417,7 +398,7 @@ export default function NetworkCompatibilityGuide() {
                     <div>
                       <h4 className="font-semibold text-red-700 mb-2">Solutions:</h4>
                       <ul className="text-sm text-red-600 space-y-1">
-                        <li>• Verify device is on carrier's approved list</li>
+                        <li>• Verify device is on carrier&apos;s approved list</li>
                         <li>• Enable VoLTE in phone settings</li>
                         <li>• Contact carrier for correct APN settings</li>
                         <li>• Try SIM in known compatible device</li>
@@ -427,7 +408,7 @@ export default function NetworkCompatibilityGuide() {
                 </div>
 
                 <div className="border border-yellow-200 rounded-xl p-6 bg-yellow-50">
-                  <h3 className="text-lg font-bold text-yellow-800 mb-3">⚠️ "Can Receive Calls But Can't Make Calls"</h3>
+                  <h3 className="text-lg font-bold text-yellow-800 mb-3">{`⚠️ "Can Receive Calls But Can't Make Calls"`}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h4 className="font-semibold text-yellow-700 mb-2">Possible Causes:</h4>
@@ -451,7 +432,7 @@ export default function NetworkCompatibilityGuide() {
                 </div>
 
                 <div className="border border-blue-200 rounded-xl p-6 bg-blue-50">
-                  <h3 className="text-lg font-bold text-blue-800 mb-3">📶 "Poor Call Quality or Dropped Calls"</h3>
+                  <h3 className="text-lg font-bold text-blue-800 mb-3">{`📶 "Poor Call Quality or Dropped Calls"`}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h4 className="font-semibold text-blue-700 mb-2">Possible Causes:</h4>
@@ -481,18 +462,18 @@ export default function NetworkCompatibilityGuide() {
               <h3 className="text-2xl font-bold mb-4">🎯 Ready to Check Compatibility?</h3>
               <p className="text-indigo-100 mb-6">Use our comparison tool to find flip phones that work with your carrier.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
+                <Link
                   href="/compare"
                   className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors"
                 >
                   Compare Compatible Phones
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/guides/buyers-guide"
                   className="px-6 py-3 bg-indigo-500 text-white font-semibold rounded-xl hover:bg-indigo-400 transition-colors"
                 >
-                  Read Buyer's Guide
-                </a>
+                  {`Read Buyer's Guide`}
+                </Link>
               </div>
             </div>
           </div>

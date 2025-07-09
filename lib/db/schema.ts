@@ -1,10 +1,11 @@
-import { pgTable, text, integer, doublePrecision, jsonb, index, boolean } from 'drizzle-orm/pg-core'
+import { pgTable, text, integer, doublePrecision, jsonb, index, boolean, timestamp } from 'drizzle-orm/pg-core'
 
 export const phone = pgTable('phone', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   slug: text('slug'),
   name: text('name'),
   description: text('description'),
+  timestamp: timestamp('timestamp'),
   android_auto: text('android_auto'),
   asia_network: jsonb('asia_network'),
   bluetooth: jsonb('bluetooth'),

@@ -4,25 +4,6 @@ export default function BuyersGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Back to Guides */}
         <div className="mb-8">
@@ -41,7 +22,7 @@ export default function BuyersGuide() {
         <div className="text-center mb-12">
           <div className="text-6xl mb-6">📘</div>
           <h1 className="text-4xl font-bold text-slate-800 mb-4">
-            Complete Buyer's Guide to Flip Phones in {new Date().getFullYear()}
+            {`Complete Buyer's Guide to Flip Phones in ${new Date().getFullYear()}`}
           </h1>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
             Everything you need to know before buying your first flip phone or dumbphone
@@ -58,7 +39,7 @@ export default function BuyersGuide() {
         {/* Content */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
-            
+
             {/* Table of Contents */}
             <div className="bg-slate-50 rounded-xl p-6 mb-8">
               <h2 className="text-xl font-bold text-slate-800 mb-4">📋 Table of Contents</h2>
@@ -76,10 +57,10 @@ export default function BuyersGuide() {
 
             {/* Content Sections */}
             <div className="prose prose-slate max-w-none">
-              
+
               <section id="why-flip-phones" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">🤔 Why Choose a Flip Phone?</h2>
-                
+
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-6">
                   <h3 className="text-lg font-semibold text-emerald-800 mb-3">💡 Quick Answer</h3>
                   <p className="text-emerald-700">Flip phones offer digital wellness, longer battery life, lower costs, and freedom from smartphone distractions while maintaining essential communication features.</p>
@@ -98,7 +79,7 @@ export default function BuyersGuide() {
                       <li>• Durability and simplicity</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-white border border-slate-200 rounded-xl p-6">
                     <h4 className="font-bold text-slate-800 mb-3">⚠️ Considerations</h4>
                     <ul className="space-y-2 text-slate-600">
@@ -115,7 +96,7 @@ export default function BuyersGuide() {
 
               <section id="types" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">📱 Types of Minimalist Phones</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
                     <div className="text-3xl mb-3">📞</div>
@@ -125,7 +106,7 @@ export default function BuyersGuide() {
                       <strong>Examples:</strong> Nokia 2720, Alcatel GO FLIP 4
                     </div>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
                     <div className="text-3xl mb-3">📱</div>
                     <h4 className="text-lg font-bold text-slate-800 mb-3">Smart Feature Phones</h4>
@@ -134,7 +115,7 @@ export default function BuyersGuide() {
                       <strong>Examples:</strong> Light Phone 3, Punkt MP02
                     </div>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
                     <div className="text-3xl mb-3">🔨</div>
                     <h4 className="text-lg font-bold text-slate-800 mb-3">Rugged Phones</h4>
@@ -148,7 +129,7 @@ export default function BuyersGuide() {
 
               <section id="key-features" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">🔑 Key Features to Consider</h2>
-                
+
                 <div className="space-y-8">
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-xl font-bold text-slate-800 mb-4">📶 Network & Connectivity</h4>
@@ -189,7 +170,7 @@ export default function BuyersGuide() {
                         <h5 className="font-semibold text-slate-700 mb-2">Build Quality:</h5>
                         <ul className="text-slate-600 space-y-1 text-sm">
                           <li>• Removable battery (easier replacement)</li>
-                          <li>• Durable materials (metal > plastic)</li>
+                          <li>• Durable materials (metal &gt; plastic)</li>
                           <li>• Water resistance (IP54+ rating)</li>
                           <li>• Physical keypad durability</li>
                         </ul>
@@ -203,7 +184,7 @@ export default function BuyersGuide() {
                       <div>
                         <h5 className="font-semibold text-slate-700 mb-2">Screen & Input:</h5>
                         <ul className="text-slate-600 space-y-1 text-sm">
-                          <li>• Screen size (2.4"+ recommended)</li>
+                          <li>{`• Screen size (2.4"+ recommended)`}</li>
                           <li>• E-ink vs LCD display</li>
                           <li>• T9 predictive text quality</li>
                           <li>• Physical button feel</li>
@@ -225,7 +206,7 @@ export default function BuyersGuide() {
 
               <section id="network-compatibility" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">📡 Network Compatibility Guide</h2>
-                
+
                 <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
                   <h4 className="font-bold text-red-800 mb-2">⚠️ Critical: 3G Network Shutdown</h4>
                   <p className="text-red-700 text-sm">Major carriers have shut down 3G networks. Only buy phones with 4G/LTE and VoLTE support.</p>
@@ -237,7 +218,7 @@ export default function BuyersGuide() {
                     <div className="space-y-4">
                       <div>
                         <h5 className="font-semibold text-slate-700">Verizon:</h5>
-                        <p className="text-sm text-slate-600">Requires VoLTE certification. Check Verizon's approved device list.</p>
+                        <p className="text-sm text-slate-600">{`Requires VoLTE certification. Check Verizon's approved device list.`}</p>
                       </div>
                       <div>
                         <h5 className="font-semibold text-slate-700">AT&T:</h5>
@@ -249,7 +230,7 @@ export default function BuyersGuide() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-slate-800 mb-4">✅ Compatibility Checklist</h4>
                     <ul className="space-y-2 text-sm text-slate-600">
@@ -266,7 +247,7 @@ export default function BuyersGuide() {
 
               <section id="budget-guide" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">💰 Budget Considerations</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="bg-green-50 border border-green-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-green-800 mb-3">💚 Budget Friendly</h4>
@@ -278,7 +259,7 @@ export default function BuyersGuide() {
                       <li>• Examples: Alcatel GO FLIP</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-blue-800 mb-3">💙 Mid-Range</h4>
                     <div className="text-2xl font-bold text-blue-600 mb-2">$150-300</div>
@@ -289,7 +270,7 @@ export default function BuyersGuide() {
                       <li>• Examples: Nokia 2720 Flip</li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-purple-800 mb-3">💜 Premium</h4>
                     <div className="text-2xl font-bold text-purple-600 mb-2">$300+</div>
@@ -323,7 +304,7 @@ export default function BuyersGuide() {
 
               <section id="top-recommendations" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">🏆 Top Recommendations by Category</h2>
-                
+
                 <div className="space-y-6">
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-xl font-bold text-slate-800 mb-4">🥇 Best Overall: Nokia 2720 Flip</h4>
@@ -401,7 +382,7 @@ export default function BuyersGuide() {
 
               <section id="where-to-buy" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">🛒 Where to Buy</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-slate-800 mb-4">🟢 Recommended Sources</h4>
@@ -420,13 +401,13 @@ export default function BuyersGuide() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-slate-800 mb-4">⚠️ What to Avoid</h4>
                     <ul className="space-y-2 text-sm text-slate-600">
                       <li>• Unknown third-party sellers on marketplaces</li>
                       <li>• Phones without clear return policies</li>
-                      <li>• "Too good to be true" pricing</li>
+                      <li>• {`"Too good to be true" pricing`}</li>
                       <li>• Devices shipped from overseas (warranty issues)</li>
                       <li>• Phones without proper FCC certification</li>
                     </ul>
@@ -454,7 +435,7 @@ export default function BuyersGuide() {
 
               <section id="setup-tips" className="mb-12">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">🚀 Setup & First Use Tips</h2>
-                
+
                 <div className="space-y-6">
                   <div className="border border-slate-200 rounded-xl p-6">
                     <h4 className="text-lg font-bold text-slate-800 mb-4">📋 Initial Setup Checklist</h4>
@@ -519,12 +500,12 @@ export default function BuyersGuide() {
                   >
                     Compare Phones
                   </a>
-                  <a
+                  <Link
                     href="/"
                     className="px-6 py-3 bg-indigo-500 text-white font-semibold rounded-xl hover:bg-indigo-400 transition-colors"
                   >
                     Browse All Phones
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

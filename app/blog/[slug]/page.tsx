@@ -1,7 +1,7 @@
 'use client'
 
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
 interface BlogPost {
   title: string
@@ -505,15 +505,15 @@ The key is to start small, prepare thoroughly, and stay committed to your digita
 export default function BlogPost() {
   const params = useParams()
   const slug = params.slug as string
-  
+
   const post = blogPosts.find(p => p.slug === slug)
-  
+
   if (!post) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Post Not Found</h1>
-          <p className="text-slate-600 mb-8">The blog post you're looking for doesn't exist.</p>
+          <p className="text-slate-600 mb-8">The blog post you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
             className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200"
@@ -528,25 +528,6 @@ export default function BlogPost() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Back to Blog */}
         <div className="mb-8">
@@ -589,9 +570,9 @@ export default function BlogPost() {
           {/* Content */}
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 lg:p-12">
             <div className="prose prose-lg max-w-none">
-              <div 
+              <div
                 className="text-slate-700 leading-relaxed"
-                dangerouslySetInnerHTML={{ 
+                dangerouslySetInnerHTML={{
                   __html: post.content
                     .replace(/\n\n/g, '</p><p>')
                     .replace(/\n/g, '<br/>')

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import { Phone } from '@/types/phone'
+import Image from 'next/image'
+import { ReactNode, useEffect, useState } from 'react'
 
 export default function Compare() {
   const [phones, setPhones] = useState<Phone[]>([])
@@ -29,16 +29,16 @@ export default function Compare() {
     fetchPhones()
   }, [])
 
-  const filteredPhones = phones.filter(phone => 
-    !searchTerm || 
+  const filteredPhones = phones.filter(phone =>
+    !searchTerm ||
     phone.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     phone.name?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const modalFilteredPhones = phones.filter(phone => 
-    (!modalSearchTerm || 
-     phone.brand?.toLowerCase().includes(modalSearchTerm.toLowerCase()) ||
-     phone.name?.toLowerCase().includes(modalSearchTerm.toLowerCase())) &&
+  const modalFilteredPhones = phones.filter(phone =>
+    (!modalSearchTerm ||
+      phone.brand?.toLowerCase().includes(modalSearchTerm.toLowerCase()) ||
+      phone.name?.toLowerCase().includes(modalSearchTerm.toLowerCase())) &&
     !selectedPhones.find(p => p.id === phone.id) // Exclude already selected phones
   )
 
@@ -52,26 +52,26 @@ export default function Compare() {
     setSelectedPhones(selectedPhones.filter(p => p.id !== phoneId))
   }
 
-  const formatEnumValue = (value: any) => {
+  const formatEnumValue = (value: unknown) => {
     if (!value) return 'N/A'
-    
+
     // Handle different data types from jsonb fields
     if (typeof value === 'string') {
       return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
     }
-    
+
     if (typeof value === 'boolean') {
       return value ? 'Yes' : 'No'
     }
-    
+
     if (Array.isArray(value)) {
       return value.join(', ')
     }
-    
+
     if (typeof value === 'object') {
       return JSON.stringify(value)
     }
-    
+
     return String(value)
   }
 
@@ -83,14 +83,14 @@ export default function Compare() {
     const fullStars = Math.floor(rating)
     const hasHalfStar = rating % 1 >= 0.5
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-    
+
     return (
       <span className="flex items-center">
         {/* Full stars */}
         {Array.from({ length: fullStars }).map((_, i) => (
           <span key={`full-${i}`} className="text-amber-400">⭐</span>
         ))}
-        
+
         {/* Half star */}
         {hasHalfStar && (
           <span className="relative">
@@ -100,7 +100,7 @@ export default function Compare() {
             </span>
           </span>
         )}
-        
+
         {/* Empty stars */}
         {Array.from({ length: emptyStars }).map((_, i) => (
           <span key={`empty-${i}`} className="text-gray-300">☆</span>
@@ -146,12 +146,12 @@ export default function Compare() {
     { key: 'rugged', label: 'Rugged Design', type: 'boolean' },
   ]
 
-  const renderFeatureValue = (phone: Phone, feature: any) => {
+  const renderFeatureValue = (phone: Phone, feature: { key: string; type: string }): ReactNode => {
     const value = phone[feature.key as keyof Phone]
-    
+
     switch (feature.type) {
       case 'text':
-        return value || 'N/A'
+        return value as string || 'N/A'
       case 'price':
         return value ? `$${parseFloat(value as string).toLocaleString()}` : 'N/A'
       case 'rating':
@@ -161,32 +161,13 @@ export default function Compare() {
       case 'boolean':
         return getBooleanIcon(Boolean(value))
       default:
-        return value || 'N/A'
+        return String(value || 'N/A')
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Navbar */}
-        <nav className="bg-white/90 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 mb-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <a href="/" className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent">
-                  📱 FlipPhoneFinder
-                </a>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="/" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Browse Phones</a>
-                <a href="/compare" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium text-indigo-600">Compare</a>
-                <a href="/guides" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Buying Guides</a>
-                <a href="/blog" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Blog</a>
-                <a href="/contact" className="text-slate-700 hover:text-indigo-600 transition-colors font-medium">Contact</a>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -213,7 +194,7 @@ export default function Compare() {
                   Clear All
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {selectedPhones.map((phone) => (
                   <div key={phone.id} className="bg-slate-50 rounded-xl p-4 relative">
@@ -243,11 +224,11 @@ export default function Compare() {
                     </div>
                   </div>
                 ))}
-                
+
                 {/* Add more slots if less than 4 */}
                 {Array.from({ length: 4 - selectedPhones.length }).map((_, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     onClick={() => setShowModal(true)}
                     className="bg-slate-100 rounded-xl p-4 flex items-center justify-center border-2 border-dashed border-slate-300 hover:border-indigo-400 hover:bg-slate-50 cursor-pointer transition-all duration-200 group"
                   >
@@ -295,7 +276,7 @@ export default function Compare() {
           <h2 className="text-2xl font-bold text-slate-800 mb-4">
             Select Phones to Compare
           </h2>
-          
+
           {/* Search Bar */}
           <div className="mb-6">
             <div className="relative max-w-md">
@@ -323,13 +304,12 @@ export default function Compare() {
               {filteredPhones.map((phone) => {
                 const isSelected = selectedPhones.find(p => p.id === phone.id)
                 const canAdd = selectedPhones.length < 4 && !isSelected
-                
+
                 return (
-                  <div key={phone.id} className={`border-2 rounded-xl p-4 transition-all ${
-                    isSelected 
-                      ? 'border-indigo-500 bg-indigo-50' 
-                      : 'border-slate-200 hover:border-slate-300 bg-white'
-                  }`}>
+                  <div key={phone.id} className={`border-2 rounded-xl p-4 transition-all ${isSelected
+                    ? 'border-indigo-500 bg-indigo-50'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }`}>
                     <div className="text-center">
                       <div className="w-20 h-20 mx-auto mb-3 relative">
                         {phone.image ? (
@@ -350,7 +330,7 @@ export default function Compare() {
                       <p className="text-emerald-600 font-semibold text-sm mb-3">
                         {phone.price ? `$${parseFloat(phone.price).toLocaleString()}` : 'Price N/A'}
                       </p>
-                      
+
                       {isSelected ? (
                         <button
                           onClick={() => removePhoneFromCompare(phone.id)}
@@ -362,11 +342,10 @@ export default function Compare() {
                         <button
                           onClick={() => addPhoneToCompare(phone)}
                           disabled={!canAdd}
-                          className={`w-full py-2 text-sm font-medium rounded-lg transition-colors ${
-                            canAdd
-                              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                          }`}
+                          className={`w-full py-2 text-sm font-medium rounded-lg transition-colors ${canAdd
+                            ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                            : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                            }`}
                         >
                           {canAdd ? 'Add to Compare' : 'Max 4 Phones'}
                         </button>
@@ -396,7 +375,7 @@ export default function Compare() {
                     ×
                   </button>
                 </div>
-                
+
                 {/* Modal Search */}
                 <div className="relative">
                   <input
@@ -413,7 +392,7 @@ export default function Compare() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Modal Phone List */}
               <div className="p-6 overflow-y-auto max-h-96">
                 {modalFilteredPhones.length === 0 ? (
