@@ -12,7 +12,7 @@ interface Phone {
   description: string | null
   featured: boolean | null
   link: string | null
-  shape: string | null
+  shape: string | string[] | object | null
   price: string | null
   rating: number | null
   condition: string | null
@@ -95,16 +95,21 @@ export default function Home() {
       const matchesShape = shapeFilter === 'all' || (() => {
         if (!phone.shape) return false
         // Handle jsonb data for filtering
-        let shape = phone.shape
-        if (typeof shape === 'object' && shape !== null) {
-          if (Array.isArray(shape)) {
-            shape = shape.join(' ') as string
+        const shapeValue: string | string[] | object = phone.shape
+        let shapeStr: string
+
+        if (typeof shapeValue === 'object' && shapeValue !== null) {
+          if (Array.isArray(shapeValue)) {
+            shapeStr = shapeValue.join(' ')
           } else {
-            shape = JSON.stringify(shape)
+            shapeStr = JSON.stringify(shapeValue)
           }
+        } else {
+          shapeStr = String(shapeValue)
         }
-        const shapeStr = String(shape).toLowerCase().replace(/['"\[\]{}]/g, '').trim()
-        return shapeStr.includes(shapeFilter.toLowerCase())
+
+        const normalizedShape = shapeStr.toLowerCase().replace(/['"\[\]{}]/g, '').trim()
+        return normalizedShape.includes(shapeFilter.toLowerCase())
       })()
 
       return matchesSearch && matchesCondition && matchesPrice && matchesRating && matchesShape
@@ -127,13 +132,19 @@ export default function Home() {
         }
       }
 
-      if (typeof aValue === 'string') {
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
         aValue = aValue.toLowerCase()
-        bValue = bValue?.toLowerCase() ?? ''
+        bValue = bValue.toLowerCase()
+      } else if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase()
+        bValue = String(bValue || '').toLowerCase()
+      } else if (typeof bValue === 'string') {
+        aValue = String(aValue || '').toLowerCase()
+        bValue = bValue.toLowerCase()
       }
 
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
+      if (aValue !== null && bValue !== null && aValue < bValue) return sortDirection === 'asc' ? -1 : 1
+      if (aValue !== null && bValue !== null && aValue > bValue) return sortDirection === 'asc' ? 1 : -1
       return 0
     })
 
@@ -159,15 +170,20 @@ export default function Home() {
   const uniqueShapes = [...new Set(phones.map(phone => {
     if (!phone.shape) return null
     // Handle jsonb data - could be string, array, or object
-    let shape = phone.shape
-    if (typeof shape === 'object' && shape !== null) {
-      if (Array.isArray(shape)) {
-        shape = shape.join(' ') as string
+    const shapeValue: string | string[] | object = phone.shape
+    let shapeStr: string
+
+    if (typeof shapeValue === 'object' && shapeValue !== null) {
+      if (Array.isArray(shapeValue)) {
+        shapeStr = shapeValue.join(' ')
       } else {
-        shape = JSON.stringify(shape)
+        shapeStr = JSON.stringify(shapeValue)
       }
+    } else {
+      shapeStr = String(shapeValue)
     }
-    return String(shape).toLowerCase().replace(/['"\[\]{}]/g, '').trim()
+
+    return shapeStr.toLowerCase().replace(/['"\[\]{}]/g, '').trim()
   }).filter(Boolean))]
 
   const handlePhoneClick = (phoneId: string) => {

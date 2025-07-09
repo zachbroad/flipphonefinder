@@ -4,7 +4,7 @@ import { Phone } from '@/types/phone'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 export default function PhoneDetailPage() {
   const params = useParams()
@@ -85,7 +85,7 @@ export default function PhoneDetailPage() {
     )
   }
 
-  const formatEnumValue = (value: unknown): string => {
+  const formatEnumValue = (value: unknown): ReactNode => {
     if (!value) return 'N/A'
 
     // Handle different data types from jsonb fields
@@ -106,6 +106,10 @@ export default function PhoneDetailPage() {
     }
 
     return String(value)
+  }
+
+  const hasValue = (value: unknown): boolean => {
+    return value !== null && value !== undefined && value !== ''
   }
 
   const getBooleanIcon = (value: boolean) => {
@@ -187,7 +191,7 @@ export default function PhoneDetailPage() {
                     {phone.brand} {phone.name}
                   </h1>
                   <div className="flex items-center space-x-4 mb-4">
-                    {phone.category && (
+                    {hasValue(phone.category) && (
                       <span className="inline-flex px-4 py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800">
                         {formatEnumValue(phone.category)}
                       </span>
@@ -305,7 +309,7 @@ export default function PhoneDetailPage() {
                 <span className="text-slate-600">{getBooleanIcon(Boolean(phone.esim))}</span>
               </div>
 
-              {phone.network && (
+              {hasValue(phone.network) && (
                 <div className="py-2">
                   <span className="font-medium text-slate-700">Network Capability</span>
                   <div className="flex flex-wrap gap-2 mt-2">
