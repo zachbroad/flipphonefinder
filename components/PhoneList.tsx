@@ -20,6 +20,7 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
   const [priceRangeFilter, setPriceRangeFilter] = useState<string>('all')
   const [ratingFilter, setRatingFilter] = useState<string>('all')
   const [shapeFilter, setShapeFilter] = useState<string>('all')
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
   const [featureFilters, setFeatureFilters] = useState<{
     flip: boolean
     longBattery: boolean
@@ -181,14 +182,14 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
       return matchesSearch && matchesPrice && matchesRating && matchesShape && matchesFeatures
     })
     .sort((a, b) => {
-      // First sort by featured status (featured items first)
-      if (a.featured !== b.featured) {
+      // Only prioritize featured phones when sorting by default field (name)
+      if (sortField === 'name' && a.featured !== b.featured) {
         return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
       }
 
       // Then sort by the selected field
-      let aValue: string | number | null = a[sortField]
-      let bValue: string | number | null = b[sortField]
+      let aValue: string | number | null = a[sortField] as string | number | null
+      let bValue: string | number | null = b[sortField] as string | number | null
 
       if (sortField === 'price') {
         aValue = parseFloat(a.price || '0') || 0
@@ -217,22 +218,6 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
       return 0
     })
 
-  const getSortIcon = (field: SortField) => {
-    if (sortField !== field) return (
-      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-      </svg>
-    )
-    return sortDirection === 'asc' ? (
-      <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-      </svg>
-    ) : (
-      <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    )
-  }
 
   const uniqueShapes = [...new Set(initialPhones.map(phone => {
     if (!phone.shape) return null
@@ -253,8 +238,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
     return shapeStr.toLowerCase().replace(/['"\[\]{}]/g, '').trim()
   }).filter(Boolean))]
 
-  const handlePhoneClick = (phoneId: string) => {
-    router.push(`/phones/${phoneId}`)
+  const handlePhoneClick = (phoneSlug: string) => {
+    router.push(`/phones/${phoneSlug}`)
   }
 
   const toggleFeatureFilter = (feature: keyof typeof featureFilters) => {
@@ -279,35 +264,6 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
     })
   }
 
-  const renderStars = (rating: number) => {
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 >= 0.5
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-
-    return (
-      <span className="flex items-center">
-        {/* Full stars */}
-        {Array.from({ length: fullStars }).map((_, i) => (
-          <span key={`full-${i}`} className="text-amber-400">⭐</span>
-        ))}
-
-        {/* Half star */}
-        {hasHalfStar && (
-          <span className="relative">
-            <span className="text-gray-300">☆</span>
-            <span className="absolute inset-0 text-amber-400 overflow-hidden" style={{ width: '50%' }}>
-              ⭐
-            </span>
-          </span>
-        )}
-
-        {/* Empty stars */}
-        {Array.from({ length: emptyStars }).map((_, i) => (
-          <span key={`empty-${i}`} className="text-gray-300">☆</span>
-        ))}
-      </span>
-    )
-  }
 
   return (
     <>
@@ -339,8 +295,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('flip')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.flip
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
-                : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               📱 Flip Phones
@@ -348,8 +304,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('longBattery')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.longBattery
-                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
-                : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                ? 'bg-green-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               🔋 Long Battery
@@ -357,8 +313,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('volte')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.volte
-                ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-lg'
-                : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                ? 'bg-purple-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               📞 VoLTE Support
@@ -366,8 +322,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('wifiCalling')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.wifiCalling
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
-                : 'bg-gray-100 text-slate-700 hover:bg-gray-200 border border-slate-200 hover:shadow-md'
+                ? 'bg-cyan-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               📶 WiFi Calling
@@ -375,8 +331,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('camera')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.camera
-                ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg'
-                : 'bg-gray-100 text-slate-700 hover:bg-gray-200 border border-slate-200 hover:shadow-md'
+                ? 'bg-pink-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               📷 With Camera
@@ -384,8 +340,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => toggleFeatureFilter('unlocked')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${featureFilters.unlocked
-                ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg'
-                : 'bg-gray-100 text-slate-700 hover:bg-gray-200 border border-slate-200 hover:shadow-md'
+                ? 'bg-orange-600 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               🔓 Unlocked
@@ -397,8 +353,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => setPriceRangeFilter('all')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${priceRangeFilter === 'all'
-                ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
-                : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                ? 'bg-gray-800 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               All Prices
@@ -413,8 +369,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
                 key={price.value}
                 onClick={() => setPriceRangeFilter(price.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${priceRangeFilter === price.value
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-                  : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                   }`}
               >
                 {price.label}
@@ -427,8 +383,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
             <button
               onClick={() => setRatingFilter('all')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${ratingFilter === 'all'
-                ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
-                : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                ? 'bg-gray-800 text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                 }`}
             >
               All Ratings
@@ -442,8 +398,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
                 key={rating.value}
                 onClick={() => setRatingFilter(rating.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${ratingFilter === rating.value
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg'
-                  : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                  ? 'bg-amber-600 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                   }`}
               >
                 {rating.label}
@@ -457,8 +413,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
               <button
                 onClick={() => setShapeFilter('all')}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${shapeFilter === 'all'
-                  ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg'
-                  : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                  ? 'bg-gray-800 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                   }`}
               >
                 All Shapes
@@ -468,8 +424,8 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
                   key={shape}
                   onClick={() => setShapeFilter(shape)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${shapeFilter === shape
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg'
-                    : 'bg-white/80 text-slate-700 hover:bg-white border border-slate-200 hover:shadow-md'
+                    ? 'bg-purple-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
                     }`}
                 >
                   📱 {shape.charAt(0).toUpperCase() + shape.slice(1)}
@@ -608,190 +564,399 @@ export default function PhoneList({ initialPhones }: PhoneListProps) {
         )}
       </div>
 
-      {/* Results Count */}
+      {/* Results Count & View Toggle */}
       <div className="mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/60 backdrop-blur-sm rounded-xl px-4 sm:px-6 py-4 border border-white/30 gap-3 sm:gap-0">
-          <p className="text-slate-700 font-medium text-sm sm:text-base">
-            Showing <span className="font-bold text-indigo-600">{filteredAndSortedPhones.length}</span> of <span className="font-bold">{initialPhones.length}</span> phones
+        <div className="flex justify-between items-center">
+          <p className="text-gray-600 font-medium text-sm">
+            Showing <span className="font-bold text-black">{filteredAndSortedPhones.length}</span> of <span className="font-bold">{initialPhones.length}</span> phones
           </p>
-          <div className="flex items-center text-xs sm:text-sm text-slate-500 justify-center sm:justify-start">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-            Table View
+          
+          {/* View Toggle */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-white text-black shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Grid
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                viewMode === 'table'
+                  ? 'bg-white text-black shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              Table
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Modern Table */}
-      <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-8 py-5 text-left">
-                  <button
-                    onClick={() => handleSort('brand')}
-                    className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
-                  >
-                    <span>Brand</span>
-                    <div className="group-hover:scale-110 transition-transform duration-200">
-                      {getSortIcon('brand')}
-                    </div>
-                  </button>
-                </th>
-                <th className="px-8 py-5 text-left">
-                  <button
-                    onClick={() => handleSort('name')}
-                    className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
-                  >
-                    <span>Name</span>
-                    <div className="group-hover:scale-110 transition-transform duration-200">
-                      {getSortIcon('name')}
-                    </div>
-                  </button>
-                </th>
-                <th className="px-8 py-5 text-left">
-                  <button
-                    onClick={() => handleSort('price')}
-                    className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
-                  >
-                    <span>Price</span>
-                    <div className="group-hover:scale-110 transition-transform duration-200">
-                      {getSortIcon('price')}
-                    </div>
-                  </button>
-                </th>
-                <th className="px-8 py-5 text-left">
-                  <button
-                    onClick={() => handleSort('released_on')}
-                    className="flex items-center space-x-2 text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors duration-200 group"
-                  >
-                    <span>Released</span>
-                    <div className="group-hover:scale-110 transition-transform duration-200">
-                      {getSortIcon('released_on')}
-                    </div>
-                  </button>
-                </th>
-                <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
-                  Image
-                </th>
-                <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
-                  Rating
-                </th>
-                <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
-                  Description
-                </th>
-                <th className="px-8 py-5 text-left text-sm font-bold text-slate-800">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredAndSortedPhones.map((phone) => (
-                <tr
-                  key={phone.id}
-                  onClick={() => handlePhoneClick(phone.id.toString())}
-                  className={`hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 transition-all duration-200 group cursor-pointer ${phone.featured ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400' : ''
-                    }`}
-                >
-                  <td className="px-8 py-6">
-                    <div className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors duration-200 flex items-center">
-                      {phone.brand || 'Unknown'}
-                      {phone.featured && (
-                        <span className="ml-2 text-amber-500" title="Featured Phone">
-                          ⭐
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="text-slate-800 font-medium">{phone.name || 'Unknown'}</div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="font-bold text-emerald-600 text-lg">
-                      {phone.price ? `$${parseFloat(phone.price).toLocaleString()}` : (
-                        <span className="text-slate-400 text-sm font-normal">N/A</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="text-slate-600 text-sm">
-                      {phone.released_on ? new Date(phone.released_on).getFullYear() : (
-                        <span className="text-slate-400">N/A</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="h-20 w-20 relative group-hover:scale-110 transition-transform duration-200">
-                      {phone.image ? (
-                        <Image
-                          src={phone.image}
-                          alt={`${phone.brand} ${phone.name}`}
-                          fill
-                          className="object-cover rounded-xl shadow-lg border-2 border-white"
-                        />
-                      ) : (
-                        <div className="h-20 w-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shadow-lg border-2 border-white">
-                          <span className="text-3xl filter grayscale">📱</span>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="text-lg">
-                      {phone.rating ? (
-                        <span className="text-amber-400">{renderStars(phone.rating)}</span>
-                      ) : (
-                        <span className="text-slate-400 text-sm">No rating</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="text-sm text-slate-600 max-w-xs leading-relaxed">
-                      {phone.description ? (
-                        <span className="text-slate-700">{phone.description}</span>
-                      ) : (
-                        <span className="italic text-slate-400">No description available</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handlePhoneClick(phone.id.toString())
-                        }}
-                        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
-                      >
-                        View Details
-                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                      {phone.link && (
-                        <a
-                          href={phone.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-sm font-semibold rounded-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105"
-                        >
-                          🛒 Buy Now
-                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1M14 6a2 2 0 002 2v1m-6 8a2 2 0 002-2v-1" />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Sort Options */}
+      <div className="mb-6 flex flex-wrap gap-3 justify-center">
+        {(['brand', 'name', 'price', 'released_on'] as const).map((field) => (
+          <button
+            key={field}
+            onClick={() => handleSort(field)}
+            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              sortField === field
+                ? 'bg-black text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-300 hover:border-gray-400 shadow-sm'
+            }`}
+          >
+            <span className="capitalize">{field === 'released_on' ? 'Released' : field}</span>
+            {sortField === field && (
+              <span className="ml-2 text-xs">
+                {sortDirection === 'asc' ? '↑' : '↓'}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
+
+      {/* Phone Display - Grid or Table */}
+      {viewMode === 'grid' ? (
+        /* Enhanced Grid View */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredAndSortedPhones.map((phone) => (
+            <div
+              key={phone.id}
+              onClick={() => handlePhoneClick(phone.slug || phone.id.toString())}
+              className={`relative bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer group overflow-hidden ${
+                phone.featured ? 'ring-2 ring-amber-400' : ''
+              }`}
+            >
+            {/* Price Badge - Top Right */}
+            {phone.price && (
+              <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+                ${parseFloat(phone.price).toLocaleString()}
+              </div>
+            )}
+            
+            {/* Featured Badge - Top Left */}
+            {phone.featured && (
+              <div className="absolute top-4 left-4 bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-xs font-medium z-10">
+                Featured
+              </div>
+            )}
+            
+            {/* Image */}
+            <div className="aspect-square bg-gray-50 relative w-full overflow-hidden">
+              {phone.image ? (
+                <Image
+                  src={phone.image}
+                  alt={`${phone.brand} ${phone.name}`}
+                  width={400}
+                  height={400}
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  unoptimized
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                    const fallback = e.currentTarget.parentElement?.querySelector('.fallback-icon')
+                    if (fallback) {
+                      fallback.classList.remove('hidden')
+                    }
+                  }}
+                />
+              ) : null}
+              <div className={`absolute inset-0 flex items-center justify-center fallback-icon ${phone.image ? 'hidden' : ''}`}>
+                <span className="text-6xl text-gray-300">📱</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-4">
+              {/* Brand & Name */}
+              <div className="mb-3">
+                <p className="text-xs font-medium text-gray-500 mb-1">
+                  {phone.brand || 'Unknown'}
+                </p>
+                <h3 className="text-base font-semibold text-gray-900 leading-tight">
+                  {phone.name || 'Unknown'}
+                </h3>
+              </div>
+
+              {/* Key Features */}
+              <div className="flex flex-wrap gap-1 mb-3">
+                  {(() => {
+                    const features = []
+                    
+                    // Check if it's a flip phone
+                    if (phone.shape) {
+                      const shapeStr = typeof phone.shape === 'object' 
+                        ? JSON.stringify(phone.shape).toLowerCase()
+                        : String(phone.shape).toLowerCase()
+                      if (shapeStr.includes('flip') || shapeStr.includes('clamshell')) {
+                        features.push({ name: 'Flip', color: 'bg-blue-100 text-blue-800' })
+                      }
+                    }
+                    
+                    // VoLTE
+                    if (phone.volte) {
+                      features.push({ name: 'VoLTE', color: 'bg-green-100 text-green-800' })
+                    }
+                    
+                    // Camera
+                    if (phone.camera) {
+                      const cameraStr = typeof phone.camera === 'object'
+                        ? JSON.stringify(phone.camera).toLowerCase()
+                        : String(phone.camera).toLowerCase()
+                      if (!cameraStr.includes('none') && !cameraStr.includes('false')) {
+                        features.push({ name: 'Camera', color: 'bg-purple-100 text-purple-800' })
+                      }
+                    }
+                    
+                    // Unlocked
+                    if (phone.sold_unlocked) {
+                      const unlockedStr = typeof phone.sold_unlocked === 'object'
+                        ? JSON.stringify(phone.sold_unlocked).toLowerCase()
+                        : String(phone.sold_unlocked).toLowerCase()
+                      if (unlockedStr.includes('true') || unlockedStr.includes('yes') || unlockedStr.includes('unlocked')) {
+                        features.push({ name: 'Unlocked', color: 'bg-orange-100 text-orange-800' })
+                      }
+                    }
+                    
+                    return features.slice(0, 3).map((feature, index) => (
+                      <span
+                        key={index}
+                        className={`inline-flex items-center px-2 py-1 ${feature.color} text-xs font-medium rounded-full`}
+                      >
+                        {feature.name}
+                      </span>
+                    ))
+                  })()}
+                </div>
+
+                {/* Rating & Year */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center">
+                    {phone.rating ? (
+                      <div className="flex items-center">
+                        <span className="text-amber-400 mr-1">★</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {phone.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-400">No rating</span>
+                    )}
+                  </div>
+                  {phone.released_on && (
+                    <span className="text-xs text-gray-500">
+                      {new Date(phone.released_on).getFullYear()}
+                    </span>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handlePhoneClick(phone.slug || phone.id.toString())
+                    }}
+                    className="flex-1 bg-black text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors duration-200"
+                  >
+                    Details
+                  </button>
+                  {phone.link && (
+                    <a
+                      href={phone.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200 text-center"
+                    >
+                      Buy
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+            ))}
+        </div>
+      ) : (
+        /* Table View */
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Features
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rating
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Year
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredAndSortedPhones.map((phone) => (
+                    <tr
+                      key={phone.id}
+                      onClick={() => handlePhoneClick(phone.slug || phone.id.toString())}
+                      className={`hover:bg-gray-50 cursor-pointer transition-colors duration-200 ${
+                        phone.featured ? 'bg-amber-50' : ''
+                      }`}
+                    >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-12 w-12 flex-shrink-0 mr-4">
+                          {phone.image ? (
+                            <Image
+                              src={phone.image}
+                              alt={`${phone.brand} ${phone.name}`}
+                              width={48}
+                              height={48}
+                              className="h-12 w-12 object-cover rounded-lg"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="h-12 w-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                              <span className="text-gray-400">📱</span>
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {phone.brand} {phone.name}
+                            {phone.featured && (
+                              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                Featured
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {phone.brand || 'Unknown Brand'}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {(() => {
+                          const features = []
+                          
+                          if (phone.shape) {
+                            const shapeStr = typeof phone.shape === 'object' 
+                              ? JSON.stringify(phone.shape).toLowerCase()
+                              : String(phone.shape).toLowerCase()
+                            if (shapeStr.includes('flip') || shapeStr.includes('clamshell')) {
+                              features.push({ name: 'Flip', color: 'bg-blue-100 text-blue-800' })
+                            }
+                          }
+                          
+                          if (phone.volte) {
+                            features.push({ name: 'VoLTE', color: 'bg-green-100 text-green-800' })
+                          }
+                          
+                          if (phone.camera) {
+                            const cameraStr = typeof phone.camera === 'object'
+                              ? JSON.stringify(phone.camera).toLowerCase()
+                              : String(phone.camera).toLowerCase()
+                            if (!cameraStr.includes('none') && !cameraStr.includes('false')) {
+                              features.push({ name: 'Camera', color: 'bg-purple-100 text-purple-800' })
+                            }
+                          }
+                          
+                          if (phone.sold_unlocked) {
+                            const unlockedStr = typeof phone.sold_unlocked === 'object'
+                              ? JSON.stringify(phone.sold_unlocked).toLowerCase()
+                              : String(phone.sold_unlocked).toLowerCase()
+                            if (unlockedStr.includes('true') || unlockedStr.includes('yes') || unlockedStr.includes('unlocked')) {
+                              features.push({ name: 'Unlocked', color: 'bg-orange-100 text-orange-800' })
+                            }
+                          }
+                          
+                          return features.slice(0, 4).map((feature, index) => (
+                            <span
+                              key={index}
+                              className={`inline-flex items-center px-2 py-1 ${feature.color} text-xs font-medium rounded-full`}
+                            >
+                              {feature.name}
+                            </span>
+                          ))
+                        })()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {phone.price ? `$${parseFloat(phone.price).toLocaleString()}` : (
+                          <span className="text-gray-400">Price varies</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        {phone.rating ? (
+                          <>
+                            <span className="text-amber-400 mr-1">★</span>
+                            <span className="text-sm font-medium text-gray-900">
+                              {phone.rating.toFixed(1)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-sm text-gray-400">No rating</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {phone.released_on ? new Date(phone.released_on).getFullYear() : 'Unknown'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handlePhoneClick(phone.slug || phone.id.toString())
+                          }}
+                          className="bg-black text-white py-1 px-3 rounded-md text-sm hover:bg-gray-800 transition-colors duration-200"
+                        >
+                          Details
+                        </button>
+                        {phone.link && (
+                          <a
+                            href={phone.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors duration-200"
+                          >
+                            Buy
+                          </a>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {filteredAndSortedPhones.length === 0 && (
         <div className="text-center py-32">

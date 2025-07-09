@@ -1,89 +1,137 @@
-'use client'
-
 import { Phone } from '@/types/phone'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
+import { db, phone } from '@/lib/db'
+import { eq, or, and, not, desc } from 'drizzle-orm'
+import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 
-export default function PhoneDetailPage() {
-  const params = useParams()
-  const [phone, setPhone] = useState<Phone | null>(null)
-  const [relatedPhones, setRelatedPhones] = useState<Phone[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+interface PhoneDetailPageProps {
+  params: Promise<{ id: string }>
+}
 
-  useEffect(() => {
-    const fetchPhone = async () => {
-      try {
-        const response = await fetch(`/api/phones/${params.id}`)
-        if (!response.ok) {
-          throw new Error('Phone not found')
-        }
-        const data = await response.json()
-        setPhone(data)
-
-        // Fetch related phones based on same brand or category
-        const allPhonesResponse = await fetch('/api/phones')
-        if (allPhonesResponse.ok) {
-          const allPhones = await allPhonesResponse.json()
-          const related = allPhones
-            .filter((p: Phone) =>
-              p.id !== data.id && // Exclude current phone
-              (p.brand === data.brand || p.category === data.category) // Same brand or category
-            )
-            .slice(0, 4) // Limit to 4 related phones
-          setRelatedPhones(related)
-        }
-      } catch (error) {
-        console.error('Error fetching phone:', error)
-        setError('Phone not found')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (params.id) {
-      fetchPhone()
-    }
-  }, [params.id])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center py-32">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-200 border-t-indigo-600"></div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 opacity-20 animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+// Generate static params for popular phones
+export async function generateStaticParams() {
+  try {
+    const popularPhones = await db.select({ id: phone.id, slug: phone.slug }).from(phone)
+      .where(eq(phone.featured, true))
+      .orderBy(desc(phone.rating))
+      .limit(50)
+    
+    return popularPhones.map((p) => ({
+      id: p.slug || p.id.toString(),
+    }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
   }
+}
 
-  if (error || !phone) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-32">
-            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-12 max-w-md mx-auto">
-              <div className="text-8xl mb-6 filter grayscale opacity-60">📱</div>
-              <h3 className="text-3xl font-bold text-slate-800 mb-4">Phone Not Found</h3>
-              <p className="text-slate-600 leading-relaxed mb-6">The phone you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-              <Link
-                href="/"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                ← Back to Browse
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ params }: PhoneDetailPageProps): Promise<Metadata> {
+  const resolvedParams = await params
+  const phoneData = await getPhoneData(resolvedParams.id)
+  
+  if (!phoneData) {
+    return {
+      title: 'Phone Not Found',
+      description: 'The phone you are looking for could not be found.',
+    }
   }
+  
+  const title = `${phoneData.brand} ${phoneData.name} - Flip Phone Finder`
+  const description = phoneData.description || 
+    `Discover the ${phoneData.brand} ${phoneData.name} - a ${phoneData.category} phone with ${phoneData.operating_system} OS. Find specs, reviews, and where to buy.`
+  
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: phoneData.image ? [phoneData.image] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: phoneData.image ? [phoneData.image] : undefined,
+    },
+  }
+}
+
+async function getPhoneData(identifier: string): Promise<Phone | null> {
+  try {
+    const phoneId = parseInt(identifier)
+    let result
+    
+    if (!isNaN(phoneId)) {
+      // If it's a valid number, search by ID
+      result = await db.select().from(phone).where(eq(phone.id, phoneId))
+    } else {
+      // If it's not a number, search by slug
+      result = await db.select().from(phone).where(eq(phone.slug, identifier))
+    }
+    
+    // If no result found and identifier is not a number, try both slug and ID
+    if (result.length === 0) {
+      result = await db.select().from(phone).where(
+        or(
+          eq(phone.slug, identifier),
+          isNaN(phoneId) ? eq(phone.id, -1) : eq(phone.id, phoneId)
+        )
+      )
+    }
+    
+    return result.length > 0 ? result[0] : null
+  } catch (error) {
+    console.error('Error fetching phone:', error)
+    return null
+  }
+}
+
+async function getRelatedPhones(currentPhone: Phone): Promise<Phone[]> {
+  try {
+    const conditions = []
+    
+    if (currentPhone.brand) {
+      conditions.push(eq(phone.brand, currentPhone.brand))
+    }
+    
+    if (currentPhone.category) {
+      conditions.push(eq(phone.category, currentPhone.category))
+    }
+    
+    if (conditions.length === 0) {
+      return []
+    }
+    
+    const related = await db.select().from(phone).where(
+      and(
+        not(eq(phone.id, currentPhone.id)),
+        or(...conditions)
+      )
+    ).limit(4)
+    
+    return related
+  } catch (error) {
+    console.error('Error fetching related phones:', error)
+    return []
+  }
+}
+
+export default async function PhoneDetailPage({ params }: PhoneDetailPageProps) {
+  const resolvedParams = await params
+  const phoneData = await getPhoneData(resolvedParams.id)
+  
+  if (!phoneData) {
+    notFound()
+  }
+  
+  const relatedPhones = await getRelatedPhones(phoneData)
+
 
   const formatEnumValue = (value: unknown): ReactNode => {
     if (!value) return 'N/A'
@@ -169,10 +217,10 @@ export default function PhoneDetailPage() {
               {/* Phone Image */}
               <div className="flex justify-center">
                 <div className="relative w-80 h-80 rounded-2xl overflow-hidden shadow-2xl">
-                  {phone.image ? (
+                  {phoneData.image ? (
                     <Image
-                      src={phone.image}
-                      alt={`${phone.brand} ${phone.name}`}
+                      src={phoneData.image}
+                      alt={`${phoneData.brand} ${phoneData.name}`}
                       fill
                       className="object-cover"
                     />
@@ -188,21 +236,21 @@ export default function PhoneDetailPage() {
               <div className="space-y-6">
                 <div>
                   <h1 className="text-4xl font-bold text-slate-900 mb-2">
-                    {phone.brand} {phone.name}
+                    {phoneData.brand} {phoneData.name}
                   </h1>
                   <div className="flex items-center space-x-4 mb-4">
-                    {hasValue(phone.category) && (
+                    {hasValue(phoneData.category) && (
                       <span className="inline-flex px-4 py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800">
-                        {formatEnumValue(phone.category)}
+                        {formatEnumValue(phoneData.category)}
                       </span>
                     )}
                   </div>
 
                   {/* Description */}
-                  {phone.description && (
+                  {phoneData.description && (
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                       <h3 className="text-lg font-semibold text-slate-800 mb-2">Description</h3>
-                      <p className="text-slate-700 leading-relaxed">{phone.description}</p>
+                      <p className="text-slate-700 leading-relaxed">{phoneData.description}</p>
                     </div>
                   )}
                 </div>
@@ -211,17 +259,17 @@ export default function PhoneDetailPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-slate-800 mb-2">Price</h3>
                     <p className="text-3xl font-bold text-emerald-600">
-                      {phone.price ? `$${phone.price.toLocaleString()}` : 'Price not available'}
+                      {phoneData.price ? `$${phoneData.price.toLocaleString()}` : 'Price not available'}
                     </p>
                   </div>
 
                   <div>
                     <h3 className="text-lg font-semibold text-slate-800 mb-2">Rating</h3>
                     <div className="flex items-center">
-                      {phone.rating ? (
+                      {phoneData.rating ? (
                         <div className="flex items-center">
-                          <span className="text-2xl text-amber-400">{renderStars(phone.rating)}</span>
-                          <span className="ml-2 text-slate-600">({phone.rating.toFixed(1)}/5)</span>
+                          <span className="text-2xl text-amber-400">{renderStars(phoneData.rating)}</span>
+                          <span className="ml-2 text-slate-600">({phoneData.rating.toFixed(1)}/5)</span>
                         </div>
                       ) : (
                         <span className="text-slate-400">No rating available</span>
@@ -231,10 +279,10 @@ export default function PhoneDetailPage() {
                 </div>
 
                 {/* Buy Button */}
-                {phone.link && (
+                {phoneData.link && (
                   <div className="mt-6">
                     <a
-                      href={phone.link}
+                      href={phoneData.link}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-lg font-bold rounded-xl hover:from-emerald-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
@@ -259,27 +307,27 @@ export default function PhoneDetailPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Phone Shape</span>
-                <span className="text-slate-600">{formatEnumValue(phone.shape)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.shape)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Operating System</span>
-                <span className="text-slate-600">{formatEnumValue(phone.operating_system)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.operating_system)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Screen Type</span>
-                <span className="text-slate-600">{formatEnumValue(phone.screen_type)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.screen_type)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Keyboard Type</span>
-                <span className="text-slate-600">{formatEnumValue(phone.t9_keyboard)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.t9_keyboard)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">USB Type</span>
-                <span className="text-slate-600">{formatEnumValue(phone.usb_type)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.usb_type)}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="font-medium text-slate-700">Sold Unlocked</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.sold_unlocked))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.sold_unlocked))}</span>
               </div>
             </div>
           </div>
@@ -290,32 +338,143 @@ export default function PhoneDetailPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">VoLTE Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.volte))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.volte))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">WiFi Calling</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.wifi_calling))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.wifi_calling))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Hotspot/Tethering</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.hotspot_tethering))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.hotspot_tethering))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Dual SIM Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.dual_sim))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.dual_sim))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">eSIM Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.esim))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.esim))}</span>
               </div>
 
-              {hasValue(phone.network) && (
+              {hasValue(phoneData.network) && (
                 <div className="py-2">
-                  <span className="font-medium text-slate-700">Network Capability</span>
+                  <span className="font-medium text-slate-700">Network Compatibility</span>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                      {formatEnumValue(phone.network)}
-                    </span>
+                    {(() => {
+                      const getCarrierInfo = (carrier: string) => {
+                        const lowerCarrier = carrier.toLowerCase().trim()
+                        
+                        // Verizon - Red
+                        if (lowerCarrier.includes('verizon')) {
+                          return {
+                            name: 'Verizon',
+                            color: 'bg-red-100 text-red-800 border-red-200'
+                          }
+                        }
+                        
+                        // AT&T - Blue
+                        if (lowerCarrier.includes('at&t') || lowerCarrier.includes('att')) {
+                          return {
+                            name: 'AT&T',
+                            color: 'bg-blue-100 text-blue-800 border-blue-200'
+                          }
+                        }
+                        
+                        // T-Mobile - Magenta/Pink
+                        if (lowerCarrier.includes('t-mobile') || lowerCarrier.includes('tmobile')) {
+                          return {
+                            name: 'T-Mobile',
+                            color: 'bg-pink-100 text-pink-800 border-pink-200'
+                          }
+                        }
+                        
+                        // Sprint - Yellow
+                        if (lowerCarrier.includes('sprint')) {
+                          return {
+                            name: 'Sprint',
+                            color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                          }
+                        }
+                        
+                        // US Cellular - Green
+                        if (lowerCarrier.includes('us cellular') || lowerCarrier.includes('uscellular')) {
+                          return {
+                            name: 'US Cellular',
+                            color: 'bg-green-100 text-green-800 border-green-200'
+                          }
+                        }
+                        
+                        // Cricket - Orange
+                        if (lowerCarrier.includes('cricket')) {
+                          return {
+                            name: 'Cricket Wireless',
+                            color: 'bg-orange-100 text-orange-800 border-orange-200'
+                          }
+                        }
+                        
+                        // Mint Mobile - Green
+                        if (lowerCarrier.includes('mint')) {
+                          return {
+                            name: 'Mint Mobile',
+                            color: 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                          }
+                        }
+                        
+                        // Visible - Purple
+                        if (lowerCarrier.includes('visible')) {
+                          return {
+                            name: 'Visible',
+                            color: 'bg-purple-100 text-purple-800 border-purple-200'
+                          }
+                        }
+                        
+                        // Unlocked/GSM/CDMA - Gray
+                        if (lowerCarrier.includes('unlocked')) {
+                          return {
+                            name: 'Unlocked',
+                            color: 'bg-gray-100 text-gray-800 border-gray-200'
+                          }
+                        }
+                        
+                        if (lowerCarrier.includes('gsm')) {
+                          return {
+                            name: 'GSM',
+                            color: 'bg-gray-100 text-gray-800 border-gray-200'
+                          }
+                        }
+                        
+                        if (lowerCarrier.includes('cdma')) {
+                          return {
+                            name: 'CDMA',
+                            color: 'bg-gray-100 text-gray-800 border-gray-200'
+                          }
+                        }
+                        
+                        // Default - return original with proper formatting
+                        return {
+                          name: carrier.charAt(0).toUpperCase() + carrier.slice(1),
+                          color: 'bg-slate-100 text-slate-800 border-slate-200'
+                        }
+                      }
+                      
+                      const networkValue = formatEnumValue(phoneData.network)
+                      const networks = typeof networkValue === 'string' 
+                        ? networkValue.split(',').map(n => n.trim()).filter(n => n.length > 0)
+                        : [networkValue]
+                      
+                      return networks.map((network, index) => {
+                        const carrierInfo = getCarrierInfo(String(network))
+                        return (
+                          <span
+                            key={index}
+                            className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${carrierInfo.color}`}
+                          >
+                            {carrierInfo.name}
+                          </span>
+                        )
+                      })
+                    })()}
                   </div>
                 </div>
               )}
@@ -329,31 +488,31 @@ export default function PhoneDetailPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">WhatsApp Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.whatsapp))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.whatsapp))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Spotify Compatible</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.spotify))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.spotify))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">GPS Navigation</span>
-                <span className="text-slate-600">{formatEnumValue(phone.gps_navigation)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.gps_navigation)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Group Text/MMS</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.group_text_mms))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.group_text_mms))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Rideshare Compatible</span>
-                <span className="text-slate-600">{formatEnumValue(phone.rideshare)}</span>
+                <span className="text-slate-600">{formatEnumValue(phoneData.rideshare)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Signal App Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.signal_app))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.signal_app))}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="font-medium text-slate-700">Email Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.email))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.email))}</span>
               </div>
             </div>
           </div>
@@ -364,47 +523,47 @@ export default function PhoneDetailPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Removable Battery</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.removable_battery))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.removable_battery))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Browser Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.browser))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.browser))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">SD Card Support</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.sd_cards))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.sd_cards))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Voice to Text</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.voice_to_text))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.voice_to_text))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Headphone Jack</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.headphone_jack))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.headphone_jack))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Camera</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.camera))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.camera))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Calendar</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.calendar))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.calendar))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Touchscreen</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.touchscreen))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.touchscreen))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">Android Auto</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.android_auto))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.android_auto))}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-100">
                 <span className="font-medium text-slate-700">NFC Tap to Pay</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.nfc_support))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.nfc_support))}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="font-medium text-slate-700">Rugged Design</span>
-                <span className="text-slate-600">{getBooleanIcon(Boolean(phone.rugged))}</span>
+                <span className="text-slate-600">{getBooleanIcon(Boolean(phoneData.rugged))}</span>
               </div>
             </div>
           </div>
@@ -416,7 +575,7 @@ export default function PhoneDetailPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* YouTube */}
             <a
-              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${phone.brand} ${phone.name} review`)}`}
+              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${phoneData.brand} ${phoneData.name} review`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-xl border border-red-200 transition-all duration-200 group"
@@ -431,7 +590,7 @@ export default function PhoneDetailPage() {
 
             {/* Google */}
             <a
-              href={`https://www.google.com/search?q=${encodeURIComponent(`${phone.brand} ${phone.name} specs review`)}`}
+              href={`https://www.google.com/search?q=${encodeURIComponent(`${phoneData.brand} ${phoneData.name} specs review`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-all duration-200 group"
@@ -446,7 +605,7 @@ export default function PhoneDetailPage() {
 
             {/* Amazon */}
             <a
-              href={`https://www.amazon.com/s?k=${encodeURIComponent(`${phone.brand} ${phone.name}`)}`}
+              href={`https://www.amazon.com/s?k=${encodeURIComponent(`${phoneData.brand} ${phoneData.name}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center p-4 bg-orange-50 hover:bg-orange-100 rounded-xl border border-orange-200 transition-all duration-200 group"
@@ -461,7 +620,7 @@ export default function PhoneDetailPage() {
 
             {/* eBay */}
             <a
-              href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(`${phone.brand} ${phone.name}`)}`}
+              href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(`${phoneData.brand} ${phoneData.name}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl border border-yellow-200 transition-all duration-200 group"
@@ -482,10 +641,10 @@ export default function PhoneDetailPage() {
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Phones</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedPhones.map((relatedPhone) => (
-                <div
+                <Link
                   key={relatedPhone.id}
-                  className="bg-slate-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200"
-                  onClick={() => window.location.href = `/phones/${relatedPhone.id}`}
+                  href={`/phones/${relatedPhone.slug || relatedPhone.id}`}
+                  className="block bg-slate-50 rounded-xl p-4 hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer border border-slate-200"
                 >
                   <div className="text-center">
                     <div className="w-20 h-20 mx-auto mb-3 relative">
@@ -513,7 +672,7 @@ export default function PhoneDetailPage() {
                       </div>
                     )}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
