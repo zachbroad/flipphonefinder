@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { Metadata } from 'next'
 
 interface BlogPost {
   title: string
@@ -13,6 +14,42 @@ interface BlogPost {
   slug: string
   content: string
   author: string
+}
+
+// Generate metadata for blog posts
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params
+  const slug = resolvedParams.slug
+  const post = blogPosts.find(p => p.slug === slug)
+  
+  if (!post) {
+    return {
+      title: 'Blog Post Not Found | Flip Phone Finder',
+      description: 'The blog post you are looking for could not be found.',
+    }
+  }
+  
+  return {
+    title: `${post.title} | Flip Phone Finder Blog`,
+    description: post.excerpt,
+    keywords: `${post.category.toLowerCase()}, flip phone, digital wellness, ${post.title.toLowerCase()}`,
+    openGraph: {
+      title: `${post.title} | Flip Phone Finder Blog`,
+      description: post.excerpt,
+      url: `https://flipphonefinder.com/blog/${post.slug}`,
+      type: 'article',
+      publishedTime: post.date,
+      authors: [post.author],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | Flip Phone Finder Blog`,
+      description: post.excerpt,
+    },
+    alternates: {
+      canonical: `https://flipphonefinder.com/blog/${post.slug}`,
+    },
+  }
 }
 
 const blogPosts: BlogPost[] = [

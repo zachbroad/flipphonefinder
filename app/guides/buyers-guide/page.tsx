@@ -1,4 +1,25 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Complete Flip Phone Buyer's Guide 2024 | Best Dumbphones & Features",
+  description: "The ultimate guide to buying flip phones in 2024. Compare features, carriers, prices, and find the perfect dumbphone for digital wellness and minimalist living.",
+  keywords: "flip phone buyers guide 2024, best flip phones, dumbphone buying guide, feature phone comparison, digital detox phones, basic phone guide",
+  openGraph: {
+    title: "Complete Flip Phone Buyer's Guide 2024 | Best Dumbphones & Features",
+    description: "The ultimate guide to buying flip phones in 2024. Compare features, carriers, prices, and find the perfect dumbphone for digital wellness and minimalist living.",
+    url: "https://flipphonefinder.com/guides/buyers-guide",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Complete Flip Phone Buyer's Guide 2024 | Best Dumbphones & Features",
+    description: "The ultimate guide to buying flip phones in 2024. Compare features, carriers, prices, and find the perfect dumbphone for digital wellness and minimalist living.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/guides/buyers-guide",
+  },
+}
 
 export default function BuyersGuide() {
   return (

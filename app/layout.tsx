@@ -15,8 +15,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Flip Phone Finder | Find the best dumbphone for you",
-  description: "Find the best flip phone for you. We have a comprehensive list of flip phones and dumbphones to choose from.",
+  title: "Flip Phone Finder | Best Dumbphones & Digital Wellness Devices 2024",
+  description: "Find the perfect flip phone for digital detox & minimalist living. Compare 100+ dumbphones, read expert reviews, and discover your ideal digital wellness device.",
+  keywords: "flip phone, dumbphone, digital detox, minimalist phone, basic phone, feature phone, digital wellness, smartphone alternative",
+  openGraph: {
+    title: "Flip Phone Finder | Best Dumbphones & Digital Wellness Devices 2024",
+    description: "Find the perfect flip phone for digital detox & minimalist living. Compare 100+ dumbphones, read expert reviews, and discover your ideal digital wellness device.",
+    url: "https://flipphonefinder.com",
+    siteName: "Flip Phone Finder",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flip Phone Finder | Best Dumbphones & Digital Wellness Devices 2024",
+    description: "Find the perfect flip phone for digital detox & minimalist living. Compare 100+ dumbphones, read expert reviews, and discover your ideal digital wellness device.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com",
+  },
 };
 
 export default function RootLayout({
@@ -51,6 +68,37 @@ export default function RootLayout({
               y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "sf06nax95h");
             `,
+          }}
+        />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Flip Phone Finder",
+              "url": "https://flipphonefinder.com",
+              "description": "Find the perfect flip phone for digital detox & minimalist living. Compare 100+ dumbphones, read expert reviews, and discover your ideal digital wellness device.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "Broad Publications LLC",
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": "201 N US Highway 1, STE D10 #1129",
+                  "addressLocality": "Jupiter",
+                  "addressRegion": "FL",
+                  "postalCode": "33477",
+                  "addressCountry": "US"
+                },
+                "email": "hello@broadpublications.com"
+              },
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://flipphonefinder.com/?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
           }}
         />
       </head>

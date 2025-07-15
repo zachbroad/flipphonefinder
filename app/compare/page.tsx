@@ -3,6 +3,7 @@
 import { Phone } from '@/types/phone'
 import Image from 'next/image'
 import { ReactNode, useEffect, useState } from 'react'
+import { Metadata } from 'next'
 
 export default function Compare() {
   const [phones, setPhones] = useState<Phone[]>([])

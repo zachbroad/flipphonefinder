@@ -1,4 +1,25 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "How to Switch from Smartphone to Flip Phone | Complete Transition Guide",
+  description: "Complete guide to switching from smartphone to flip phone. Learn data transfer, app alternatives, and tips for a smooth transition to digital minimalism.",
+  keywords: "switch to flip phone, smartphone to flip phone transition, digital minimalism transition, flip phone setup, dumbphone switch guide",
+  openGraph: {
+    title: "How to Switch from Smartphone to Flip Phone | Complete Transition Guide",
+    description: "Complete guide to switching from smartphone to flip phone. Learn data transfer, app alternatives, and tips for a smooth transition to digital minimalism.",
+    url: "https://flipphonefinder.com/guides/switching-guide",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Switch from Smartphone to Flip Phone | Complete Transition Guide",
+    description: "Complete guide to switching from smartphone to flip phone. Learn data transfer, app alternatives, and tips for a smooth transition to digital minimalism.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/guides/switching-guide",
+  },
+}
 
 export default function SwitchingGuide() {
   return (

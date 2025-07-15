@@ -1,4 +1,26 @@
 
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Contact Us | Flip Phone Finder - Expert Digital Wellness Advice",
+  description: "Get expert advice on flip phones and digital wellness devices. Contact our team for personalized recommendations and support with your dumbphone journey.",
+  keywords: "flip phone support, digital wellness advice, dumbphone help, flip phone contact, expert recommendations",
+  openGraph: {
+    title: "Contact Us | Flip Phone Finder - Expert Digital Wellness Advice",
+    description: "Get expert advice on flip phones and digital wellness devices. Contact our team for personalized recommendations and support with your dumbphone journey.",
+    url: "https://flipphonefinder.com/contact",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us | Flip Phone Finder - Expert Digital Wellness Advice",
+    description: "Get expert advice on flip phones and digital wellness devices. Contact our team for personalized recommendations and support with your dumbphone journey.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/contact",
+  },
+}
+
 export default function Contact() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">

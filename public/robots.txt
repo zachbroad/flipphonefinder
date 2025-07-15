@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://flipphonefinder.com/sitemap.xml
+
+# Disallow admin/private areas if any exist
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+
+# Allow search engines to crawl all public content
+Allow: /phones/
+Allow: /guides/
+Allow: /blog/
+Allow: /compare/
+Allow: /contact/

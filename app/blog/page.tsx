@@ -1,4 +1,25 @@
 import Link from "next/link"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Digital Wellness Blog | Flip Phone Reviews & Minimalist Living Tips",
+  description: "Expert insights on flip phones, digital detox strategies, and mindful technology use. Read reviews, guides, and tips for a healthier relationship with technology.",
+  keywords: "digital wellness blog, flip phone reviews, digital detox, minimalist living, smartphone alternatives, digital minimalism",
+  openGraph: {
+    title: "Digital Wellness Blog | Flip Phone Reviews & Minimalist Living Tips",
+    description: "Expert insights on flip phones, digital detox strategies, and mindful technology use. Read reviews, guides, and tips for a healthier relationship with technology.",
+    url: "https://flipphonefinder.com/blog",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Digital Wellness Blog | Flip Phone Reviews & Minimalist Living Tips",
+    description: "Expert insights on flip phones, digital detox strategies, and mindful technology use. Read reviews, guides, and tips for a healthier relationship with technology.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/blog",
+  },
+}
 
 export default function Blog() {
   const posts = [

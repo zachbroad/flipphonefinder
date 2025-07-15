@@ -1,4 +1,25 @@
 import Link from "next/link"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Flip Phone Buying Guides | Digital Wellness & Minimalist Phone Guides",
+  description: "Comprehensive guides for choosing flip phones, digital detox strategies, and minimalist living. Expert advice for finding your perfect dumbphone.",
+  keywords: "flip phone buying guide, dumbphone guide, digital detox guide, minimalist phone guide, feature phone comparison, digital wellness",
+  openGraph: {
+    title: "Flip Phone Buying Guides | Digital Wellness & Minimalist Phone Guides",
+    description: "Comprehensive guides for choosing flip phones, digital detox strategies, and minimalist living. Expert advice for finding your perfect dumbphone.",
+    url: "https://flipphonefinder.com/guides",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flip Phone Buying Guides | Digital Wellness & Minimalist Phone Guides",
+    description: "Comprehensive guides for choosing flip phones, digital detox strategies, and minimalist living. Expert advice for finding your perfect dumbphone.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/guides",
+  },
+}
 
 export default function Guides() {
   const guides = [

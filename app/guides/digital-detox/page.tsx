@@ -1,4 +1,25 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Digital Detox Guide 2024 | Reduce Screen Time with Flip Phones",
+  description: "Step-by-step guide to digital detox using flip phones. Learn how to reduce smartphone addiction, improve mental health, and embrace digital minimalism.",
+  keywords: "digital detox guide, screen time reduction, smartphone addiction, flip phone detox, digital minimalism, mental health, digital wellness",
+  openGraph: {
+    title: "Digital Detox Guide 2024 | Reduce Screen Time with Flip Phones",
+    description: "Step-by-step guide to digital detox using flip phones. Learn how to reduce smartphone addiction, improve mental health, and embrace digital minimalism.",
+    url: "https://flipphonefinder.com/guides/digital-detox",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Digital Detox Guide 2024 | Reduce Screen Time with Flip Phones",
+    description: "Step-by-step guide to digital detox using flip phones. Learn how to reduce smartphone addiction, improve mental health, and embrace digital minimalism.",
+  },
+  alternates: {
+    canonical: "https://flipphonefinder.com/guides/digital-detox",
+  },
+}
 
 export default function DigitalDetoxGuide() {
   return (
