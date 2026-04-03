@@ -51,44 +51,17 @@ export default function Blog() {
       slug: "light-phone-3-vs-agm-m8-comparison"
     },
     {
-      title: "Why Gen Z is Embracing Flip Phones",
-      excerpt: "Exploring the growing trend of young people switching to basic phones for better mental health and productivity.",
+      title: "Why I Switched to a Flip Phone (And Never Looked Back)",
+      excerpt: "A personal journey from smartphone addiction to intentional living with a flip phone, and what I learned along the way.",
       date: "Dec 10, 2024",
-      readTime: "6 min read",
-      category: "Trends",
-      image: "👥",
-      slug: "gen-z-flip-phones"
-    },
-    {
-      title: "Setting Up Your First Dumbphone: A Beginner's Guide",
-      excerpt: "Everything you need to know about transitioning from a smartphone to a basic phone, including apps and services.",
-      date: "Dec 8, 2024",
-      readTime: "10 min read",
-      category: "Guides",
-      image: "🚀",
-      slug: "setting-up-first-dumbphone"
-    },
-    {
-      title: "The Science Behind Digital Minimalism",
-      excerpt: "Research-backed insights into how reducing screen time and digital distractions can improve focus and well-being.",
-      date: "Dec 5, 2024",
-      readTime: "7 min read",
-      category: "Research",
-      image: "🧠",
-      slug: "science-digital-minimalism"
-    },
-    {
-      title: "Best Flip Phones for Business Professionals",
-      excerpt: "Professional-grade basic phones that maintain essential business functionality while reducing digital distractions.",
-      date: "Dec 3, 2024",
-      readTime: "9 min read",
-      category: "Business",
-      image: "💼",
-      slug: "best-flip-phones-business"
+      readTime: "11 min read",
+      category: "Personal Stories",
+      image: "✨",
+      slug: "why-i-switched-to-flip-phone"
     }
   ]
 
-  const categories = ["All", "Digital Wellness", "Reviews", "Guides", "Trends", "Research", "Business"]
+  const categories = ["All", "Digital Wellness", "Reviews", "Guides", "Personal Stories"]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -184,15 +157,10 @@ export default function Blog() {
             <p className="text-indigo-100 mb-8 text-lg">
               Get weekly insights on digital minimalism, phone reviews, and mindful technology use.
             </p>
-            <div className="max-w-md mx-auto flex gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-xl border-0 focus:ring-4 focus:ring-white/20 bg-white/90"
-              />
-              <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
-                Subscribe
-              </button>
+            <div className="max-w-md mx-auto">
+              <a href="mailto:hello@broadpublications.com?subject=Newsletter%20Subscription&body=I%27d%20like%20to%20subscribe%20to%20the%20FlipPhoneFinder%20newsletter." className="inline-flex items-center px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
+                Subscribe via Email
+              </a>
             </div>
             <p className="text-xs text-indigo-200 mt-4">
               No spam, unsubscribe anytime. Read our <Link href="/privacy" className="underline">privacy policy</Link>.

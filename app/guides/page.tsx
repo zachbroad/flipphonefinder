@@ -29,6 +29,7 @@ export default function Guides() {
       icon: "📘",
       difficulty: "Beginner",
       readTime: "15 min read",
+      slug: "buyers-guide",
       topics: ["Phone Selection", "Features", "Carriers", "Pricing"]
     },
     {
@@ -37,6 +38,7 @@ export default function Guides() {
       icon: "🧘",
       difficulty: "Beginner",
       readTime: "12 min read",
+      slug: "digital-detox",
       topics: ["Digital Wellness", "Habit Formation", "Mental Health", "Productivity"]
     },
     {
@@ -45,6 +47,7 @@ export default function Guides() {
       icon: "🔄",
       difficulty: "Intermediate",
       readTime: "20 min read",
+      slug: "switching-guide",
       topics: ["Data Transfer", "App Alternatives", "Workflow Changes", "Social Considerations"]
     },
     {
@@ -53,6 +56,7 @@ export default function Guides() {
       icon: "🎯",
       difficulty: "Beginner",
       readTime: "10 min read",
+      slug: "lifestyle-guide",
       topics: ["Lifestyle Matching", "Use Cases", "Feature Comparison", "Recommendations"]
     },
     {
@@ -61,6 +65,7 @@ export default function Guides() {
       icon: "📡",
       difficulty: "Advanced",
       readTime: "18 min read",
+      slug: "network-compatibility",
       topics: ["Network Technologies", "Carrier Support", "Coverage Maps", "Technical Specs"]
     },
     {
@@ -69,6 +74,7 @@ export default function Guides() {
       icon: "👨‍👩‍👧‍👦",
       difficulty: "Intermediate",
       readTime: "14 min read",
+      slug: "parental-controls",
       topics: ["Parental Controls", "Family Plans", "Child Safety", "Screen Time Management"]
     },
     {
@@ -77,6 +83,7 @@ export default function Guides() {
       icon: "💼",
       difficulty: "Intermediate",
       readTime: "16 min read",
+      slug: "business-use-cases",
       topics: ["Business Features", "Professional Communication", "Productivity Tools", "Enterprise Solutions"]
     },
     {
@@ -85,6 +92,7 @@ export default function Guides() {
       icon: "🔧",
       difficulty: "Intermediate",
       readTime: "8 min read",
+      slug: "troubleshooting",
       topics: ["Technical Issues", "Troubleshooting", "Maintenance", "Support"]
     }
   ]
@@ -165,9 +173,9 @@ export default function Guides() {
                       </span>
                     ))}
                   </div>
-                  <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
+                  <Link href={`/guides/${guides[0].slug}`} className="inline-block px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
                     Read Guide
-                  </button>
+                  </Link>
                 </div>
                 <div className="text-6xl ml-8 opacity-50">
                   {guides[0].icon}
@@ -180,7 +188,7 @@ export default function Guides() {
         {/* Guides Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {guides.slice(1).map((guide, index) => (
-            <div key={index} className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-200 group">
+            <Link key={index} href={`/guides/${guide.slug}`} className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-200 group block">
               <div className="p-6">
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
                   {guide.icon}
@@ -207,11 +215,11 @@ export default function Guides() {
                     </span>
                   ))}
                 </div>
-                <button className="w-full py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200">
+                <span className="block w-full py-2 text-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg group-hover:from-indigo-600 group-hover:to-purple-700 transition-all duration-200">
                   Read Guide
-                </button>
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

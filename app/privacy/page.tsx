@@ -81,7 +81,7 @@ export default function Privacy() {
                 <p className="text-slate-600">Jupiter, FL 33477</p>
                 <p className="text-slate-600">United States</p>
                 <p className="text-slate-600">Email: hello@broadpublications.com</p>
-                <p className="text-slate-600">Phone: (555) 123-4567</p>
+                <p className="text-slate-600">Website: flipphonefinder.com</p>
               </div>
             </div>
           </div>

@@ -775,10 +775,10 @@ export default function BusinessUseCasesGuide() {
                   <p className="text-sm text-gray-600">Professional use cases and recommendations</p>
                 </div>
               </Link>
-              <Link href="/blog/digital-minimalism-mental-health" className="flex items-center space-x-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+              <Link href="/blog/digital-detox-guide-2024" className="flex items-center space-x-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors">
                 <span className="text-2xl">🧠</span>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Mental Health Benefits</h3>
+                  <h3 className="font-semibold text-gray-900">Digital Detox Guide</h3>
                   <p className="text-sm text-gray-600">Workplace wellness and productivity</p>
                 </div>
               </Link>
