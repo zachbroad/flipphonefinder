@@ -19,58 +19,6 @@ export default async function Home() {
             Compare flip phones, dumbphones, and minimalist devices designed for mindful living
           </p>
         </div>
-
-        {/* Getting Started Section */}
-        <div className="mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800 mb-2">🚀 Getting Started</h3>
-              <p className="text-slate-600 text-sm">New to flip phones? Start with these essential guides</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link href="/guides/buyers-guide" className="group bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
-                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">📘</div>
-                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">{`Complete Buyer's Guide`}</h4>
-                <p className="text-slate-600 text-xs mb-2">Everything you need to know before buying your first flip phone</p>
-                <div className="flex items-center text-xs text-slate-500">
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">Beginner</span>
-                  <span>15 min read</span>
-                </div>
-              </Link>
-
-              <Link href="/guides/digital-detox" className="group bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
-                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">🧘</div>
-                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-emerald-700 transition-colors">Digital Detox Guide</h4>
-                <p className="text-slate-600 text-xs mb-2">Step-by-step plan to reduce screen time and digital dependency</p>
-                <div className="flex items-center text-xs text-slate-500">
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full mr-2">Beginner</span>
-                  <span>12 min read</span>
-                </div>
-              </Link>
-
-              <Link href="/guides/switching-guide" className="group bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200">
-                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200">🔄</div>
-                <h4 className="text-base font-bold text-slate-800 mb-2 group-hover:text-purple-700 transition-colors">Switching Made Easy</h4>
-                <p className="text-slate-600 text-xs mb-2">Practical tips for transitioning from smartphone to flip phone</p>
-                <div className="flex items-center text-xs text-slate-500">
-                  <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full mr-2">Intermediate</span>
-                  <span>10 min read</span>
-                </div>
-              </Link>
-            </div>
-
-            <div className="text-center mt-6">
-              <Link href="/guides" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 text-sm">
-                View All Guides
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-
         {/* PhoneList Component with SSR data */}
         <PhoneList initialPhones={phones} />
 
